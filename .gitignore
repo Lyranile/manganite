@@ -1,4 +1,45 @@
+# Image artifacts
+*.img
+*.iso
+*.qcow2
+*.raw
+
+# OCI images
+aurora*.oci
+*.oci
+
+# Archives
+*.tar
+*.tar.gz
+*.tar.zst
+
+# SBOM & signing
+sbom_out
+*.sbom
 cosign.key
+
+# Build manifests
+manifest.json
+
+# Build outputs
 _build_*
 output
-_build-*/**
+result
+result-*
+
+# Logs & temp
+*.log
+*.tmp
+tmp/
+temp/
+
+# Cache
+.cache/
+.backup/
+.podman/
+.buildah/
+
+# Config & environment
+changelog.md
+*.env
+devcontainer
