@@ -1,0 +1,17 @@
+telemetry = false
+
+[install]
+cleanDuplicateDependencies = true
+minimumReleaseAge = 259200
+frozenLockfile = true
+ignoreScripts = true
+allowGit = false
+auto = "prompt"
+dryRun = false
+audit = true
+
+[console]
+depth = 2
+
+[test]
+coverageThreshold = 0.9

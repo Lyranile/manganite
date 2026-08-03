@@ -8,6 +8,12 @@ export image_keywords := env_var("IMAGE_KEYWORDS")
 export image_logo_url := env_var("IMAGE_LOGO_URL")
 export default_tag := env_var("DEFAULT_TAG")
 export bib_image := env_var("BIB_IMAGE")
+export ublue_image_tag := env_var("UBLUE_IMAGE_TAG")
+export dms := env_var("DMS")
+export mangowm := env_var("MANGOWM")
+export base_image_name := env_var("BASE_IMAGE_NAME")
+export base_image_tag := env_var("BASE_IMAGE_TAG")
+export fedora_major_version := env_var("FEDORA_MAJOR_VERSION")
 
 alias build-vm := build-qcow2
 alias rebuild-vm := rebuild-qcow2
@@ -100,6 +106,12 @@ build $target_image=image_name $tag=default_tag:
 
     BUILD_ARGS=()
     LABELS=()
+    BUILD_ARGS+=("--build-arg" "DMS={{ dms }}")
+    BUILD_ARGS+=("--build-arg" "MANGOWM={{ mangowm }}")
+    BUILD_ARGS+=("--build-arg" "BASE_IMAGE_NAME={{ base_image_name }}")
+    BUILD_ARGS+=("--build-arg" "BASE_IMAGE_TAG={{ base_image_tag }}")
+    BUILD_ARGS+=("--build-arg" "UBLUE_IMAGE_TAG={{ ublue_image_tag }}")
+    BUILD_ARGS+=("--build-arg" "FEDORA_MAJOR_VERSION={{ fedora_major_version }}")
     if [[ -z "$(git status -s)" ]]; then
         GIT_SHA=$(git rev-parse --short HEAD)
         LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/{{ repo_organization }}/{{ image_name }}/${GIT_SHA}/README.md")
