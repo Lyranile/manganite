@@ -166,6 +166,14 @@ ostree-rechunk $target_image=image_name $tag=default_tag:
     # You can use your own base image here to avoid pulling fedora-bootc
     RPM_OSTREE_CHUNKER_IMAGE="quay.io/fedora/fedora-bootc:latest"
 
+    # Clean transient files from the image before chunking (saves a lot of
+    # space in the composed tree, same as bazzite does before rechunking)
+    container=$(buildah from "localhost/${target_image}:${tag}")
+    mnt=$(buildah mount "${container}")
+    rm -rf "${mnt}"/run/.* "${mnt}"/run/* "${mnt}"/tmp/.* "${mnt}"/tmp/*
+    buildah umount "${container}"
+    buildah commit --identity-label=false --rm "${container}" "localhost/${target_image}:${tag}"
+
     podman run --rm \
       --pull=newer \
       --privileged \
