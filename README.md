@@ -125,9 +125,14 @@ This should queue your image for the next reboot, which you can do immediately a
 
 The [Containerfile](./Containerfile) defines the operations used to customize the selected image.This file is the entrypoint for your image build, and works exactly like a regular podman Containerfile. For reference, please see the [Podman Documentation](https://docs.podman.io/en/latest/Introduction.html).
 
-## build.sh
+## build_files
 
-The [build.sh](./build_files/build.sh) file is called from your Containerfile. It is the best place to install new packages or make any other customization to your system. There are customization examples contained within it for your perusal.
+The [build_files](./build_files) directory mirrors the image root: everything under it is copied to the same path in the image, so any file you drop there ships as-is. The only build steps that cannot be expressed as files are enabling the extra repos and installing packages, both done inline in the Containerfile and parameterized by the `ENABLE_REPOS` and `INSTALL_PACKAGES` build args.
+
+- `etc/yum.repos.d/` - Terra and DMS COPR repo files, shipped `enabled=0` and permanently enabled during the build via `dnf config-manager setopt`, so users of the final image also get them (e.g. for `rpm-ostree install` of Terra/COPR packages)
+- `etc/pki/rpm-gpg/RPM-GPG-KEY-terra44` - Terra signing key
+- `usr/lib/systemd/system-preset/50-manganite.preset` - enables `gdm.service`
+- `etc/skel/` - user dotfiles (mango config, DMS settings, micro/starship/uv/bun, systemd session units), copied into every new user's home on first login
 
 ## build.yml
 
