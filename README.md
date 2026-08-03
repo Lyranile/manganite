@@ -1,6 +1,6 @@
-# image-template
+# manganite
 
-This repository is meant to be a template for building your own custom [bootc](https://github.com/bootc-dev/bootc) image. This template is the recommended way to make customizations to any image published by the Universal Blue Project.
+A minimal [bootc](https://github.com/bootc-dev/bootc) image that starts from the NVIDIA base and layers the [mangowm](https://mangowm.github.io/) tiling compositor and the [DankMaterialShell](https://danklinux.com/docs/dankmaterialshell/) (DMS) desktop shell on top.
 
 # Community
 
@@ -88,7 +88,6 @@ For a base image, you can choose any of the Universal Blue images or start from 
 - Bazzite: `ghcr.io/ublue-os/bazzite:stable`
 - Aurora: `ghcr.io/ublue-os/aurora:stable`
 - Bluefin: `ghcr.io/ublue-os/bluefin:stable`
-- Universal Blue Base: `ghcr.io/ublue-os/base-main:latest`
 - Fedora: `quay.io/fedora/fedora-bootc:44`
 
 You can find more Universal Blue images on the [packages page](https://github.com/orgs/ublue-os/packages).
@@ -175,7 +174,7 @@ To use it, you must have installed [just](https://just.systems/man/en/introducti
 
 These are all sourced from the `image-template.env` file.
 
-- `image_name`: The name of the image (default: "image-template").
+- `image_name`: The name of the image (default: "manganite").
 - `default_tag`: The default tag for the image (default: "latest").
 - `bib_image`: The Bootc Image Builder (BIB) image (default: "quay.io/centos-bootc/bootc-image-builder:latest").
 

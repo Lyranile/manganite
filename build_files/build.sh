@@ -1,27 +1,37 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# manganite - Bazzite GNOME NVIDIA base + mangowm + DMS
+set -eoux pipefail
 
-set -ouex pipefail
+source /ctx/build_files/packages.sh
 
-# Copy the contents of system_files/ of the git repo to /
-cp -avf "/ctx/system_files"/. /
+SRC=/ctx/system_files
 
-### Install packages
+# Install packages (DMS comes from its COPR only when enabled)
+dnf -y install "${FEDORA_PACKAGES[@]}"
+dnf install --nogpgcheck --repofrompath \
+    'terra,https://repos.fyralabs.com/terra$releasever' terra-release
+dnf -y install "${TERRA_PACKAGES[@]}"
 
-# Packages can be installed from any enabled yum repo on the image.
-# RPMfusion repos are available by default in ublue main images
-# List of rpmfusion packages can be found here:
-# https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/43/x86_64/repoview/index.html&protocol=https&redirect=1
+if [[ "$DMS" == "true" ]]; then
+    dnf -y copr enable "$DMS_COPR_NAME"
+    dnf -y install "${DMS_COPR_PACKAGES[@]}"
+    dnf -y copr disable "$DMS_COPR_NAME"
+fi
 
-# this installs a package from fedora repos
-dnf5 install -y tmux
+# Ship files: system_files/ mirrors the image root; etc/skel/ is copied
+# into each new user's ~ by useradd, which is where dotfiles belong.
+cp -a "$SRC/usr/." /usr/
+cp -a "$SRC/etc/." /etc/
 
-# Use a COPR Example:
-#
-# dnf5 -y copr enable ublue-os/staging
-# dnf5 -y install package
-# Disable COPRs so they don't end up enabled on the final image:
-# dnf5 -y copr disable ublue-os/staging
+# Without mangowm, run DMS on every user session instead of the mango one
+if [[ "$DMS" == "true" && "$MANGOWM" != "true" ]]; then
+    systemctl --global enable dms
+fi
 
-#### Example for enabling a System Unit File
+systemctl enable gdm
 
-systemctl enable podman.socket
+# Disable repos added only for this build
+for repo in /etc/yum.repos.d/terra*.repo \
+            /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:*.repo; do
+    [ -f "$repo" ] && sed -i 's@enabled=1@enabled=0@g' "$repo"
+done
