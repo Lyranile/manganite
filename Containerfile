@@ -1,14 +1,15 @@
 # Allow build scripts to be referenced without being copied into the final image
 
 ARG BASE_IMAGE_NAME="kinoite-nvidia"
-ARG BASE_IMAGE_TAG="stable"
+ARG BASE_IMAGE_TAG="44"
 ARG BASE_IMAGE="ghcr.io/ublue-os/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}"
 
 # Repos to enable permanently for the entire OS
 ARG ENABLE_REPOS="terra"
 
 # Packages to install (Fedora repos + the repos listed above)
-# noctalia is in Fedora 44+ (kinoite:stable is 44); no extra copr needed — aligns with ublue-os/main F44
+# noctalia is in Fedora 44+; use an explicit .44 tag (the 'stable' tag on
+# kinoite-nvidia is abandoned). NVIDIA is baked in via ublue akmods.
 ARG INSTALL_PACKAGES="android-tools brightnessctl cava cliphist foot git i2c-tools just micro papirus-icon-theme playerctl polkit uv wl-clipboard xdg-desktop-portal-gtk xdg-desktop-portal-wlr zoxide bibata-cursor-theme bun-bin ghostty mangowm starship noctalia"
 
 FROM ${BASE_IMAGE}
