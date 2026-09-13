@@ -40,7 +40,7 @@ jobs:
 
       - name: Configure container policy for verified base image pulls
         run: |
-          sudo ./.github/setup-runner-keys.sh
+          sudo bash ./.github/setup-runner-keys.sh
 
       - name: Install just
         uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 #v4.0.0
