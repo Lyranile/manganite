@@ -1,2 +1,1 @@
 enable flatpak-nuke-fedora.service
-enable rechunker-group-fix.service
