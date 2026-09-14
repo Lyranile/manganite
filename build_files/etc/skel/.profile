@@ -1,5 +1,5 @@
 # Tokens
-export PATH="$HOME/.local/bin:$HOME/bin:/var/$HOME/.bun/bin:/usr/bin:/run/host/usr/bin:$HOME/go/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/bin:$HOME/.bun/bin:/usr/bin:/run/host/usr/bin:$HOME/go/bin:$PATH"
 export HOMEBREW_NO_ENV_HINTS=1
 export XDG_CONFIG_HOME="$HOME/.config"
 export TANSTACK_CLI_TELEMETRY_DISABLED=1

@@ -1,5 +1,8 @@
 # manganite
 
+[![Build](https://github.com/Lyranile/manganite/actions/workflows/build.yml/badge.svg)](https://github.com/Lyranile/manganite/actions/workflows/build.yml)
+[![Lint](https://github.com/Lyranile/manganite/actions/workflows/lint.yml/badge.svg)](https://github.com/Lyranile/manganite/actions/workflows/lint.yml)
+
 A minimal [bootc](https://github.com/bootc-dev/bootc) image that starts from the NVIDIA base and layers the [mangowm](https://mangowm.github.io/) tiling compositor and the [DankMaterialShell](https://danklinux.com/docs/dankmaterialshell/) (DMS) desktop shell on top.
 
 # Community
@@ -199,29 +202,11 @@ Arguments:
 - `$target_image`: The tag you want to apply to the image (default: `$image_name`).
 - `$tag`: The tag for the image (default: `$default_tag`).
 
-### Rechunking
-We can flatten the layers of container images to make sure there isn't a single huge layer when your image gets published.
-This does not make your image faster to download, just provides better resumability.
-
-#### `just ostree-rechunk`
-Rechunks the existing Image with [rpm-ostree](https://coreos.github.io/rpm-ostree/build-chunked-oci/)
-
-```bash
-just ostree-rechunk $target_image $tag
-```
-
-#### `just rechunk`
-Rechunks the existing Image with [chunkah](https://github.com/coreos/chunkah), this is probably gonna be the default here at some point, try it out, it's cool.
-
-```bash
-just rechunk $target_image $tag
-```
-
 ### Switching to the locally built image for testing
 
 The image has to be in the containers-storage owned by root, to be able to rebase to it, see the `_rootful_load_image` recipe.
 
-`sudo just build` and `sudo just ostree-rechunk` builds directly as root and allows you to skip the transfer to the root containers-storage.
+`sudo just build` builds directly as root and allows you to skip the transfer to the root containers-storage.
 
 You can rebase to all the images that are in your containers-storage:
 
