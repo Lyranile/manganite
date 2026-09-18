@@ -1,4 +1,37 @@
-cosign.key
+# Archives
+# Build manifests
+# Build outputs
+# Cache
+# Config & environment
+# Image artifacts
+# Logs & temp
+# OCI images
+# SBOM & signing
+*.env
+*.img
+*.iso
+*.log
+*.oci
+*.qcow2
+*.raw
+*.sbom
+*.tar
+*.tar.gz
+*.tar.zst
+*.tmp
+.backup/
+.buildah/
+.cache/
+.podman/
 _build_*
+aurora*.oci
+changelog.md
+cosign.key
+devcontainer
+manifest.json
 output
-_build-*/**
+result
+result-*
+sbom_out
+temp/
+tmp/

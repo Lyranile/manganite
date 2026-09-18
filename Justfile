@@ -8,6 +8,8 @@ export image_keywords := env_var("IMAGE_KEYWORDS")
 export image_logo_url := env_var("IMAGE_LOGO_URL")
 export default_tag := env_var("DEFAULT_TAG")
 export bib_image := env_var("BIB_IMAGE")
+export base_image_name := env_var("BASE_IMAGE_NAME")
+export base_image_tag := env_var("BASE_IMAGE_TAG")
 
 alias build-vm := build-qcow2
 alias rebuild-vm := rebuild-qcow2
@@ -100,6 +102,8 @@ build $target_image=image_name $tag=default_tag:
 
     BUILD_ARGS=()
     LABELS=()
+    BUILD_ARGS+=("--build-arg" "BASE_IMAGE_NAME={{ base_image_name }}")
+    BUILD_ARGS+=("--build-arg" "BASE_IMAGE_TAG={{ base_image_tag }}")
     if [[ -z "$(git status -s)" ]]; then
         GIT_SHA=$(git rev-parse --short HEAD)
         LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/{{ repo_organization }}/{{ image_name }}/${GIT_SHA}/README.md")
@@ -125,55 +129,6 @@ build $target_image=image_name $tag=default_tag:
     PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --pull=newer --tag "${target_image}:${tag}" --file Containerfile)
 
     podman build "${PODMAN_BUILD_ARGS[@]}" .
-
-# Split the image for smaller updates (New)!
-rechunk $target_image=image_name $tag=default_tag:
-    #!/usr/bin/env bash
-
-    set -xeuo pipefail
-
-    # TODO: pin chunkah image to hash once mature enough
-    # You may run into space issues on github runenrs as we are making a
-    # complete copy of the image
-    export CHUNKAH_CONFIG_STR=$(podman inspect "${target_image}")
-    podman run --rm --mount=type=image,src="${target_image}",target=/chunkah \
-    -e CHUNKAH_CONFIG_STR quay.io/coreos/chunkah:latest \
-    build \
-    --verbose \
-    --compressed \
-    --max-layers 128 \
-    --prune /sysroot/ \
-    --label ostree.commit- --label ostree.final-diffid- \
-    --tag "${target_image}:${tag}" | podman load
-
-# Split the image for smaller updates (Classical)!
-ostree-rechunk $target_image=image_name $tag=default_tag:
-    #!/usr/bin/env bash
-
-    set -xeuo pipefail
-
-    # TODO: This is the only blocker for rootless CI
-    # https://github.com/coreos/rpm-ostree/issues/5346
-    if [[ ! "${UID}" -eq "0" ]]; then
-      echo "This needs to run as root."
-      exit 1
-    fi
-
-    # You can use your own base image here to avoid pulling fedora-bootc
-    RPM_OSTREE_CHUNKER_IMAGE="quay.io/fedora/fedora-bootc:latest"
-
-    podman run --rm \
-      --pull=newer \
-      --privileged \
-      -v "/var/lib/containers:/var/lib/containers" \
-      --entrypoint /usr/bin/rpm-ostree \
-      "${RPM_OSTREE_CHUNKER_IMAGE}" \
-      compose build-chunked-oci \
-      --max-layers 127 \
-      --format-version=2 \
-      --bootc \
-      --from "localhost/${target_image}:${tag}" \
-      --output containers-storage:"localhost/${target_image}:${tag}"
 
 # Generate Default Tag
 [group('Utility')]

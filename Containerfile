@@ -1,41 +1,47 @@
 # Allow build scripts to be referenced without being copied into the final image
-FROM scratch AS ctx
-COPY build_files /
-COPY system_files /system_files
 
-# Base Image
-FROM ghcr.io/ublue-os/bazzite:stable@sha256:b923f92d5a5b59eb992e269383eba2744601052da9d3d1595f76e79aa6ce2df0
-## Other possible base images include:
-# FROM ghcr.io/ublue-os/bazzite:testing
-# FROM ghcr.io/ublue-os/aurora:stable
-# FROM ghcr.io/ublue-os/bluefin-nvidia-open:stable
-# 
-# ... and so on, here are more base images
-# Universal Blue Images: https://github.com/orgs/ublue-os/packages
-# Fedora base image: quay.io/fedora/fedora-bootc:44
-# CentOS base images: quay.io/centos-bootc/centos-bootc:stream10
+ARG BASE_IMAGE_NAME="kinoite-nvidia"
+ARG BASE_IMAGE_TAG="44"
+ARG BASE_IMAGE="ghcr.io/ublue-os/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}"
 
-### [IM]MUTABLE /opt
-## Some bootable images, like Fedora, have /opt symlinked to /var/opt, in order to
-## make it mutable/writable for users. However, some packages write files to this directory,
-## thus its contents might be wiped out when bootc deploys an image, making it troublesome for
-## some packages. Eg, google-chrome, docker-desktop.
-##
-## Uncomment the following line if one desires to make /opt immutable and be able to be used
-## by the package manager.
+# Repos to enable permanently for the entire OS
+ARG ENABLE_REPOS="terra"
 
-# RUN rm /opt && mkdir /opt
+# Packages to install (Fedora repos + the repos listed above)
+# noctalia is in Fedora 44+; use an explicit .44 tag (the 'stable' tag on
+# kinoite-nvidia is abandoned). NVIDIA is baked in via ublue akmods.
+ARG INSTALL_PACKAGES="android-tools brightnessctl cava cliphist foot git i2c-tools just micro papirus-icon-theme playerctl polkit uv wl-clipboard xdg-desktop-portal-gtk xdg-desktop-portal-wlr zoxide bibata-cursor-theme bun-bin ghostty mangowm starship noctalia"
 
-### MODIFICATIONS
-## make modifications desired in your image and install packages by modifying the build.sh script
-## the following RUN directive does all the things required to run "build.sh" as recommended.
+FROM ${BASE_IMAGE}
 
-RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache \
-    --mount=type=cache,dst=/var/log \
-    --mount=type=tmpfs,dst=/tmp \
-    /ctx/build.sh
+# Build args declared before the first FROM are not in scope after it
+ARG ENABLE_REPOS
+ARG INSTALL_PACKAGES
 
-### LINTING
-## Verify final image and contents are correct.
+COPY build_files/ /
+
+# Enable the extra repos for the whole OS
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    for repo in ${ENABLE_REPOS}; do \
+        dnf -y config-manager setopt "${repo}.enabled=1"; \
+    done
+
+# Install packages from Fedora and the enabled repos
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    dnf -y install ${INSTALL_PACKAGES}
+
+# Aurora KDE tweaks copied from aurora/build_scripts/base/16-override-install.sh
+RUN rm -f /usr/bin/chsh /usr/bin/lchsh && \
+    sed -Ei "s/secure_path = (.*)/secure_path = \1:\/home\/linuxbrew\/.linuxbrew\/bin/" /etc/sudoers || true && \
+    ln -sf "/usr/share/fonts/google-noto-sans-cjk-fonts" "/usr/share/fonts/noto-cjk" || true && \
+    rm -rf /usr/share/doc/HTML && \
+    rm -f /usr/lib64/qt6/plugins/kf6/krunner/krunner_appstream.so && \
+    rm -f /etc/profile.d/gnome-ssh-askpass.{csh,sh} && \
+    mkdir -p /var/lib/samba/usershares && chown -R root:usershares /var/lib/samba/usershares || true && \
+    firewall-offline-cmd --service=samba --service=samba-client || true && \
+    setsebool -P samba_enable_home_dirs=1 || true && setsebool -P samba_export_all_ro=1 || true && setsebool -P samba_export_all_rw=1 || true && \
+    sed -i '/^\[homes\]/,/^\[/{/^\[homes\]/d;/^\[/!d}' /etc/samba/smb.conf || true
+
+CMD ["/sbin/init"]
+
 RUN bootc container lint

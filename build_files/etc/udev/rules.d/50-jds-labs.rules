@@ -1,0 +1,10 @@
+# JDS Labs Element IV - Normal and DFU mode rules
+#SUBSYSTEM=="usb", ATTRS{idVendor}=="152a", ATTRS{idProduct}=="88fa", GROUP="plugdev", TAG+="uaccess"
+# SUBSYSTEM=="usb", ATTRS{idVendor}=="152a", ATTRS{idProduct}=="88fc", GROUP="plugdev", TAG+="uaccess"
+
+SUBSYSTEM=="usb", ATTR{idVendor}=="152a", ATTR{idProduct}=="88fa", TAG+="uaccess"
+SUBSYSTEM=="usb", ATTR{idVendor}=="152a", ATTR{idProduct}=="88fc", TAG+="uaccess"
+
+# Interface access rules
+# SUBSYSTEM=="usb", ATTRS{idVendor}=="152a", ENV{DEVTYPE}=="usb_device", GROUP="plugdev"
+# SUBSYSTEM=="usb", ATTRS{idVendor}=="152a", ENV{DEVTYPE}=="usb_interface", GROUP="plugdev"

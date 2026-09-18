@@ -1,4 +1,3 @@
----
 name: Build disk images
 
 on:
@@ -25,7 +24,7 @@ on:
 
 env:
   IMAGE_NAME: ${{ github.event.repository.name }} # output of build.yml, keep in sync
-  IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"  # do not edit
+  IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}" # do not edit
   DEFAULT_TAG: "latest"
   BIB_IMAGE: "quay.io/centos-bootc/bootc-image-builder:latest"
 
@@ -97,7 +96,7 @@ jobs:
           retention-days: 0
           compression-level: 0
           overwrite: true
-      
+
       - name: Upload to S3
         if: inputs.upload-to-s3 == true && github.event_name != 'pull_request'
         shell: bash

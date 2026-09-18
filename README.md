@@ -1,6 +1,9 @@
-# image-template
+# manganite
 
-This repository is meant to be a template for building your own custom [bootc](https://github.com/bootc-dev/bootc) image. This template is the recommended way to make customizations to any image published by the Universal Blue Project.
+[![Build](https://github.com/Lyranile/manganite/actions/workflows/build.yml/badge.svg)](https://github.com/Lyranile/manganite/actions/workflows/build.yml)
+[![Lint](https://github.com/Lyranile/manganite/actions/workflows/lint.yml/badge.svg)](https://github.com/Lyranile/manganite/actions/workflows/lint.yml)
+
+A minimal [bootc](https://github.com/bootc-dev/bootc) image that starts from the NVIDIA base and layers the [mangowm](https://mangowm.github.io/) tiling compositor and the [DankMaterialShell](https://danklinux.com/docs/dankmaterialshell/) (DMS) desktop shell on top.
 
 # Community
 
@@ -88,7 +91,6 @@ For a base image, you can choose any of the Universal Blue images or start from 
 - Bazzite: `ghcr.io/ublue-os/bazzite:stable`
 - Aurora: `ghcr.io/ublue-os/aurora:stable`
 - Bluefin: `ghcr.io/ublue-os/bluefin:stable`
-- Universal Blue Base: `ghcr.io/ublue-os/base-main:latest`
 - Fedora: `quay.io/fedora/fedora-bootc:44`
 
 You can find more Universal Blue images on the [packages page](https://github.com/orgs/ublue-os/packages).
@@ -126,9 +128,14 @@ This should queue your image for the next reboot, which you can do immediately a
 
 The [Containerfile](./Containerfile) defines the operations used to customize the selected image.This file is the entrypoint for your image build, and works exactly like a regular podman Containerfile. For reference, please see the [Podman Documentation](https://docs.podman.io/en/latest/Introduction.html).
 
-## build.sh
+## build_files
 
-The [build.sh](./build_files/build.sh) file is called from your Containerfile. It is the best place to install new packages or make any other customization to your system. There are customization examples contained within it for your perusal.
+The [build_files](./build_files) directory mirrors the image root: everything under it is copied to the same path in the image, so any file you drop there ships as-is. The only build steps that cannot be expressed as files are enabling the extra repos and installing packages, both done inline in the Containerfile and parameterized by the `ENABLE_REPOS` and `INSTALL_PACKAGES` build args.
+
+- `etc/yum.repos.d/` - Terra and DMS COPR repo files, shipped `enabled=0` and permanently enabled during the build via `dnf config-manager setopt`, so users of the final image also get them (e.g. for `rpm-ostree install` of Terra/COPR packages)
+- `etc/pki/rpm-gpg/RPM-GPG-KEY-terra44` - Terra signing key
+- `usr/lib/systemd/system-preset/50-manganite.preset` - enables `gdm.service`
+- `etc/skel/` - user dotfiles (mango config, DMS settings, micro/starship/uv/bun, systemd session units), copied into every new user's home on first login
 
 ## build.yml
 
@@ -160,9 +167,9 @@ Once the workflow is done, you'll find the disk images either in your S3 bucket 
 
 This template comes with the necessary tooling to index your image on [artifacthub.io](https://artifacthub.io). Use the `artifacthub-repo.yml` file at the root to verify yourself as the publisher. This is important to you for a few reasons:
 
-- The value of artifacthub is it's one place for people to index their custom images, and since we depend on each other to learn, it helps grow the community. 
+- The value of artifacthub is it's one place for people to index their custom images, and since we depend on each other to learn, it helps grow the community.
 - You get to see your pet project listed with the other cool projects in Cloud Native.
-- Since the site puts your README front and center, it's a good way to learn how to write a good README, learn some marketing, finding your audience, etc. 
+- Since the site puts your README front and center, it's a good way to learn how to write a good README, learn some marketing, finding your audience, etc.
 
 [Discussion Thread](https://universal-blue.discourse.group/t/listing-your-custom-image-on-artifacthub/6446)
 
@@ -175,7 +182,7 @@ To use it, you must have installed [just](https://just.systems/man/en/introducti
 
 These are all sourced from the `image-template.env` file.
 
-- `image_name`: The name of the image (default: "image-template").
+- `image_name`: The name of the image (default: "manganite").
 - `default_tag`: The default tag for the image (default: "latest").
 - `bib_image`: The Bootc Image Builder (BIB) image (default: "quay.io/centos-bootc/bootc-image-builder:latest").
 
@@ -195,29 +202,11 @@ Arguments:
 - `$target_image`: The tag you want to apply to the image (default: `$image_name`).
 - `$tag`: The tag for the image (default: `$default_tag`).
 
-### Rechunking
-We can flatten the layers of container images to make sure there isn't a single huge layer when your image gets published.
-This does not make your image faster to download, just provides better resumability.
-
-#### `just ostree-rechunk`
-Rechunks the existing Image with [rpm-ostree](https://coreos.github.io/rpm-ostree/build-chunked-oci/)
-
-```bash
-just ostree-rechunk $target_image $tag
-```
-
-#### `just rechunk`
-Rechunks the existing Image with [chunkah](https://github.com/coreos/chunkah), this is probably gonna be the default here at some point, try it out, it's cool.
-
-```bash
-just rechunk $target_image $tag
-```
-
 ### Switching to the locally built image for testing
 
 The image has to be in the containers-storage owned by root, to be able to rebase to it, see the `_rootful_load_image` recipe.
 
-`sudo just build` and `sudo just ostree-rechunk` builds directly as root and allows you to skip the transfer to the root containers-storage.
+`sudo just build` builds directly as root and allows you to skip the transfer to the root containers-storage.
 
 You can rebase to all the images that are in your containers-storage:
 

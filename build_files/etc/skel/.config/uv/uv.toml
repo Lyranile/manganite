@@ -1,0 +1,13 @@
+exclude-newer = "7 days"
+no-build = true
+no-build-package = []
+no-binary = false
+no-binary-package = []
+link-mode = "copy"
+compile-bytecode = true
+offline = false
+system-certs = true
+
+[audit]
+ignore = []
+ignore-deps = []
