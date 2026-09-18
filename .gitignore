@@ -1,45 +1,37 @@
+# Archives
+# Build manifests
+# Build outputs
+# Cache
+# Config & environment
 # Image artifacts
+# Logs & temp
+# OCI images
+# SBOM & signing
+*.env
 *.img
 *.iso
+*.log
+*.oci
 *.qcow2
 *.raw
-
-# OCI images
-aurora*.oci
-*.oci
-
-# Archives
+*.sbom
 *.tar
 *.tar.gz
 *.tar.zst
-
-# SBOM & signing
-sbom_out
-*.sbom
-cosign.key
-
-# Build manifests
-manifest.json
-
-# Build outputs
+*.tmp
+.backup/
+.buildah/
+.cache/
+.podman/
 _build_*
+aurora*.oci
+changelog.md
+cosign.key
+devcontainer
+manifest.json
 output
 result
 result-*
-
-# Logs & temp
-*.log
-*.tmp
-tmp/
+sbom_out
 temp/
-
-# Cache
-.cache/
-.backup/
-.podman/
-.buildah/
-
-# Config & environment
-changelog.md
-*.env
-devcontainer
+tmp/
