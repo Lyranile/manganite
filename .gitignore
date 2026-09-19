@@ -23,7 +23,7 @@
 .buildah/
 .cache/
 .podman/
-_build_*
+_build*
 aurora*.oci
 changelog.md
 cosign.key
