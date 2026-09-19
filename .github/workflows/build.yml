@@ -10,7 +10,7 @@ on:
       - '.gitignore'
       - '.pre-commit-config.yaml'
       - 'LICENSE'
-      - 'artifacthub-repo.yml'
+      - 'artifacthub-repo.yaml'
       - 'cosign.pub'
   schedule:
     - cron: '05 10 * * *' # 10:05am UTC everyday
@@ -24,7 +24,7 @@ on:
       - '.gitignore'
       - '.pre-commit-config.yaml'
       - 'LICENSE'
-      - 'artifacthub-repo.yml'
+      - 'artifacthub-repo.yaml'
       - 'cosign.pub'
   workflow_dispatch:
 

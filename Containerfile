@@ -10,7 +10,30 @@ ARG ENABLE_REPOS="terra"
 # Packages to install (Fedora repos + the repos listed above)
 # noctalia is in Fedora 44+; use an explicit .44 tag (the 'stable' tag on
 # kinoite-nvidia is abandoned). NVIDIA is baked in via ublue akmods.
-ARG INSTALL_PACKAGES="android-tools brightnessctl cava cliphist foot git i2c-tools just micro papirus-icon-theme playerctl polkit uv wl-clipboard xdg-desktop-portal-gtk xdg-desktop-portal-wlr zoxide bibata-cursor-theme bun-bin ghostty mangowm starship noctalia"
+ARG INSTALL_PACKAGES="git \
+  papirus-icon-theme \
+  bibata-cursor-theme \
+  xdg-desktop-portal-gtk \
+  xdg-desktop-portal-wlr \
+  brightnessctl \
+  wl-clipboard \
+  i2c-tools \
+  playerctl \
+  cliphist \
+  polkit \
+  android-tools \
+  cava \
+  just \
+  pnpm \
+  uv \
+  alacritty \
+  starship \
+  noctalia \
+  mangowm \
+  zoxide \
+  micro \
+  yazi \
+  zsh"
 
 FROM ${BASE_IMAGE}
 
