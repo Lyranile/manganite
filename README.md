@@ -165,7 +165,7 @@ Once the workflow is done, you'll find the disk images either in your S3 bucket 
 
 # Artifacthub
 
-This template comes with the necessary tooling to index your image on [artifacthub.io](https://artifacthub.io). Use the `artifacthub-repo.yml` file at the root to verify yourself as the publisher. This is important to you for a few reasons:
+This template comes with the necessary tooling to index your image on [artifacthub.io](https://artifacthub.io). Use the `artifacthub-repo.yaml` file at the root to verify yourself as the publisher. This is important to you for a few reasons:
 
 - The value of artifacthub is it's one place for people to index their custom images, and since we depend on each other to learn, it helps grow the community.
 - You get to see your pet project listed with the other cool projects in Cloud Native.
