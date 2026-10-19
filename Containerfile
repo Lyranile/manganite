@@ -1,6 +1,6 @@
 # Allow build scripts to be referenced without being copied into the final image
 
-ARG BASE_IMAGE_NAME="kinoite-nvidia"
+ARG BASE_IMAGE_NAME="base-main"
 ARG BASE_IMAGE_TAG="44"
 ARG BASE_IMAGE="ghcr.io/ublue-os/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}"
 
@@ -53,17 +53,16 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y install ${INSTALL_PACKAGES}
 
-# Aurora KDE tweaks copied from aurora/build_scripts/base/16-override-install.sh
-RUN rm -f /usr/bin/chsh /usr/bin/lchsh && \
-    sed -Ei "s/secure_path = (.*)/secure_path = \1:\/home\/linuxbrew\/.linuxbrew\/bin/" /etc/sudoers || true && \
-    ln -sf "/usr/share/fonts/google-noto-sans-cjk-fonts" "/usr/share/fonts/noto-cjk" || true && \
-    rm -rf /usr/share/doc/HTML && \
-    rm -f /usr/lib64/qt6/plugins/kf6/krunner/krunner_appstream.so && \
-    rm -f /etc/profile.d/gnome-ssh-askpass.{csh,sh} && \
-    mkdir -p /var/lib/samba/usershares && chown -R root:usershares /var/lib/samba/usershares || true && \
-    firewall-offline-cmd --service=samba --service=samba-client || true && \
-    setsebool -P samba_enable_home_dirs=1 || true && setsebool -P samba_export_all_ro=1 || true && setsebool -P samba_export_all_rw=1 || true && \
-    sed -i '/^\[homes\]/,/^\[/{/^\[homes\]/d;/^\[/!d}' /etc/samba/smb.conf || true
+# NVIDIA: base-main ships no drivers, so install akmods-nvidia plus the
+# userspace bits from the Fedora release repo. Drop this block if you
+# do not need proprietary drivers.
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    dnf -y install \
+        "https://download.fedoraproject.org/pub/fedora/linux/releases/${BASE_IMAGE_TAG}/Everything/x86_64/os/Packages/f/akmods-nvidia-*.rpm" \
+        nvidia-modprobe nvidia-persistenced vdpauinfo libva-vdpau-driver && \
+    echo "add_drivers+(\"nvidia\")" > /etc/libdnf5/protected.d/nvidia.conf && \
+    rm -f /usr/bin/chsh /usr/bin/lchsh && \
+    sed -Ei "s/secure_path = (.*)/secure_path = \1:\/home\/linuxbrew\/.linuxbrew\/bin/" /etc/sudoers || true
 
 CMD ["/sbin/init"]
 
