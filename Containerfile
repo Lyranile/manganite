@@ -16,31 +16,32 @@ ARG INSTALL_PACKAGES="git \
   brightnessctl \
   wl-clipboard \
   i2c-tools \
+  os-prober \
   playerctl \
   cliphist \
   polkit \
   android-tools \
   fastfetch \
+  go-task \
   cava \
   just \
+  make \
   pnpm \
+  gcc \
   uv \
   alacritty \
   starship \
   mangowm \
   zoxide \
   micro \
+  atuin \
+  procs \
   yazi \
   zsh \
   eza \
   bat \
   fzf \
-  atuin \
-  duf \
-  procs \
-  make \
-  gcc \
-  go-task"
+  duf"
 
 ARG AKMODS_FLAVOR="main"
 
@@ -89,19 +90,25 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     done && \
     dnf -y install --setopt=tsflags=noscripts /tmp/kernel-rpms/kernel-*.rpm && \
     (dnf -y versionlock add kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra 2>/dev/null || true) && \
-    AKMODNV_PATH=/tmp/akmods-nv-rpms /tmp/akmods-nv-rpms/ublue-os/nvidia-install.sh && \
+    IMAGE_NAME="SKIP_PACKAGE_INSTALL" AKMODNV_PATH=/tmp/akmods-nv-rpms /tmp/akmods-nv-rpms/ublue-os/nvidia-install.sh && \
     echo 'add_drivers+=("nvidia")' > /etc/libdnf5/protected.d/nvidia.conf && \
     rm -f /usr/bin/chsh /usr/bin/lchsh && \
     sed -Ei "s/secure_path = (.*)/secure_path = \1:\/home\/linuxbrew\/.linuxbrew\/bin/" /etc/sudoers || true
 
-# Rebuild initramfs for the (possibly replaced) kernel (ublue-style)
+# Rebuild initramfs for the (possibly replaced) kernel
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
-    --mount=type=tmpfs,dst=/boot \
-    --mount=type=tmpfs,dst=/var \
-    export DRACUT_NO_XATTR=1 && \
-    KERNEL_VERSION="$(rpm -q --queryformat='%{evr}.%{arch}' kernel-core)" && \
-    /usr/bin/dracut --no-hostonly --kver "${KERNEL_VERSION}" --reproducible -v --add ostree -f "/lib/modules/${KERNEL_VERSION}/initramfs.img" && \
-    chmod 0600 "/lib/modules/${KERNEL_VERSION}/initramfs.img"
+    KVER="$(rpm -q --queryformat='%{evr}.%{arch}' kernel-core)" && \
+    /usr/bin/dracut --no-hostonly --kver "$KVER" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$KVER/initramfs.img" && \
+    chmod 0600 "/usr/lib/modules/$KVER/initramfs.img"
+
+# GRUB
+RUN if [ -f /etc/default/grub ]; then \
+        sed -i 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT=60/' /etc/default/grub; \
+        grep -q '^GRUB_DEFAULT=' /etc/default/grub || echo 'GRUB_DEFAULT=saved' >> /etc/default/grub; \
+        grep -q '^GRUB_SAVEDEFAULT=' /etc/default/grub || echo 'GRUB_SAVEDEFAULT=true' >> /etc/default/grub; \
+        sed -i 's/^GRUB_DISABLE_OS_PROBER=.*/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub; \
+        grep -q '^GRUB_DISABLE_OS_PROBER=' /etc/default/grub || echo 'GRUB_DISABLE_OS_PROBER=false' >> /etc/default/grub; \
+    fi
 
 CMD ["/sbin/init"]
 
