@@ -1,6 +1,6 @@
 # Allow build scripts to be referenced without being copied into the final image
 
-ARG BASE_IMAGE_NAME="kinoite-nvidia"
+ARG BASE_IMAGE_NAME="base-main"
 ARG BASE_IMAGE_TAG="44"
 ARG BASE_IMAGE="ghcr.io/ublue-os/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}"
 
@@ -8,8 +8,6 @@ ARG BASE_IMAGE="ghcr.io/ublue-os/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}"
 ARG ENABLE_REPOS="terra"
 
 # Packages to install (Fedora repos + the repos listed above)
-# noctalia is in Fedora 44+; use an explicit .44 tag (the 'stable' tag on
-# kinoite-nvidia is abandoned). NVIDIA is baked in via ublue akmods.
 ARG INSTALL_PACKAGES="git \
   papirus-icon-theme \
   bibata-cursor-theme \
@@ -22,24 +20,41 @@ ARG INSTALL_PACKAGES="git \
   cliphist \
   polkit \
   android-tools \
+  fastfetch \
   cava \
   just \
   pnpm \
   uv \
   alacritty \
   starship \
-  noctalia \
   mangowm \
   zoxide \
   micro \
   yazi \
-  zsh"
+  zsh \
+  eza \
+  bat \
+  fzf \
+  atuin \
+  duf \
+  procs"
+
+# NVIDIA variant: "proprietary" (default) or "open" (nvidia-open / NVK-friendly)
+ARG NVIDIA_VARIANT="proprietary"
+ARG AKMODS_FLAVOR="main"
+
+FROM ghcr.io/ublue-os/akmods:${AKMODS_FLAVOR}-${BASE_IMAGE_TAG} AS akmods
+FROM ghcr.io/ublue-os/akmods-nvidia:${AKMODS_FLAVOR}-${BASE_IMAGE_TAG} AS akmods-nvidia
+FROM ghcr.io/ublue-os/akmods-nvidia-open:${AKMODS_FLAVOR}-${BASE_IMAGE_TAG} AS akmods-nvidia-open
 
 FROM ${BASE_IMAGE}
 
 # Build args declared before the first FROM are not in scope after it
 ARG ENABLE_REPOS
 ARG INSTALL_PACKAGES
+ARG NVIDIA_VARIANT
+ARG AKMODS_FLAVOR
+ARG BASE_IMAGE_TAG
 
 COPY build_files/ /
 
@@ -53,17 +68,38 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y install ${INSTALL_PACKAGES}
 
-# Aurora KDE tweaks copied from aurora/build_scripts/base/16-override-install.sh
-RUN rm -f /usr/bin/chsh /usr/bin/lchsh && \
-    sed -Ei "s/secure_path = (.*)/secure_path = \1:\/home\/linuxbrew\/.linuxbrew\/bin/" /etc/sudoers || true && \
-    ln -sf "/usr/share/fonts/google-noto-sans-cjk-fonts" "/usr/share/fonts/noto-cjk" || true && \
-    rm -rf /usr/share/doc/HTML && \
-    rm -f /usr/lib64/qt6/plugins/kf6/krunner/krunner_appstream.so && \
-    rm -f /etc/profile.d/gnome-ssh-askpass.{csh,sh} && \
-    mkdir -p /var/lib/samba/usershares && chown -R root:usershares /var/lib/samba/usershares || true && \
-    firewall-offline-cmd --service=samba --service=samba-client || true && \
-    setsebool -P samba_enable_home_dirs=1 || true && setsebool -P samba_export_all_ro=1 || true && setsebool -P samba_export_all_rw=1 || true && \
-    sed -i '/^\[homes\]/,/^\[/{/^\[homes\]/d;/^\[/!d}' /etc/samba/smb.conf || true
+# DMS (DankMaterialShell) from COPR, minimal deps
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    dnf -y copr enable duxlabs/dux && \
+    dnf -y copr enable duxlabs/dms && \
+    dnf -y install dms --setopt=install_weak_deps=False
+
+# Bind DMS to the MangoWC session
+RUN mkdir -p /usr/lib/systemd/user/mango-session.target.wants && \
+    ln -sf /usr/lib/systemd/user/dms.service /usr/lib/systemd/user/mango-session.target.wants/dms.service || true
+
+# NVIDIA: install the chosen variant (proprietary or open) using ublue's
+# prebuilt akmods, replacing the kernel with the one shipped by the akmods
+# image so the kmod matches.
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    --mount=type=bind,from=akmods,src=/rpms/common,dst=/tmp/akmods-rpms \
+    --mount=type=bind,from=akmods,src=/kernel-rpms,dst=/tmp/kernel-rpms \
+    --mount=type=bind,from=akmods-nvidia,src=/rpms,dst=/tmp/akmods-nv-proprietary \
+    --mount=type=bind,from=akmods-nvidia-open,src=/rpms,dst=/tmp/akmods-nv-open \
+    if [ "${NVIDIA_VARIANT}" = "open" ]; then \
+        NV_PATH=/tmp/akmods-nv-open; \
+    else \
+        NV_PATH=/tmp/akmods-nv-proprietary; \
+    fi && \
+    for pkg in kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra; do \
+        rpm --erase "$pkg" --nodeps 2>/dev/null || true; \
+    done && \
+    dnf -y install --setopt=tsflags=noscripts /tmp/kernel-rpms/kernel-*.rpm && \
+    (dnf -y versionlock add kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra 2>/dev/null || true) && \
+    AKMODNV_PATH="${NV_PATH}" "${NV_PATH}/ublue-os/nvidia-install.sh" && \
+    echo 'add_drivers+=("nvidia")' > /etc/libdnf5/protected.d/nvidia.conf && \
+    rm -f /usr/bin/chsh /usr/bin/lchsh && \
+    sed -Ei "s/secure_path = (.*)/secure_path = \1:\/home\/linuxbrew\/.linuxbrew\/bin/" /etc/sudoers || true
 
 CMD ["/sbin/init"]
 

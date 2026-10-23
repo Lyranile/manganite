@@ -6,33 +6,33 @@ SHELL=$(cat /proc/$$/comm)
 
 # Starship
 if [ "$(command -v starship)" ]; then
-	eval "$(starship init ${SHELL})"
-	eval "$(starship completions ${SHELL})"
+	eval "$(starship init "${SHELL}")"
+	eval "$(starship completions "${SHELL}")"
 fi
 
 # List Aliases
 if [ "$(command -v eza)" ]; then
 	FLAGS="--git --icons=auto --classify --group-directories-first --time-style=long-iso --color-scale"
-	alias ls="eza $FLAGS"
-	alias l="eza $FLAGS --git-ignore"
-	alias ll="eza $FLAGS --all --header --long"
-	alias tree="eza $FLAGS --tree"
+	alias ls='eza $FLAGS'
+	alias l='eza $FLAGS --git-ignore'
+	alias ll='eza $FLAGS --all --header --long'
+	alias tree='eza $FLAGS --tree'
 fi
 
 # Zoxide Aliases
 if [ "$(command -v zoxide)" ]; then
-	eval "$(zoxide init ${SHELL})"
+	eval "$(zoxide init "${SHELL}")"
 	alias cd="z"
 fi
 
 # Picker Aliases
 if [ "$(command -v fzf)" ]; then
-	eval "$(fzf --${SHELL})"
+	eval "$(fzf --"${SHELL}")"
 fi
 
 # Atuin Aliases
 if [ "$(command -v atuin)" ]; then
-	eval "$(atuin init ${SHELL})"
+	eval "$(atuin init "${SHELL}")"
 fi
 
 # Cat Aliases
@@ -42,12 +42,12 @@ if [ "$(command -v bat)" ]; then
 fi
 
 # Processes Aliases
-if [ "$(command -v duf)" ]; then
+if [ "$(command -v procs)" ]; then
     alias ps='procs'
 fi
 
 # Pip Aliases
-if [ "$(command -v pip)" ]; then
+if [ "$(command -v uv)" ]; then
     alias pip='uv'
 fi
 
