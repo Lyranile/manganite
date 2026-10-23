@@ -37,7 +37,10 @@ ARG INSTALL_PACKAGES="git \
   fzf \
   atuin \
   duf \
-  procs"
+  procs \
+  make \
+  gcc \
+  go-task"
 
 ARG AKMODS_FLAVOR="main"
 
@@ -90,6 +93,15 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     echo 'add_drivers+=("nvidia")' > /etc/libdnf5/protected.d/nvidia.conf && \
     rm -f /usr/bin/chsh /usr/bin/lchsh && \
     sed -Ei "s/secure_path = (.*)/secure_path = \1:\/home\/linuxbrew\/.linuxbrew\/bin/" /etc/sudoers || true
+
+# Rebuild initramfs for the (possibly replaced) kernel (ublue-style)
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    --mount=type=tmpfs,dst=/boot \
+    --mount=type=tmpfs,dst=/var \
+    export DRACUT_NO_XATTR=1 && \
+    KERNEL_VERSION="$(rpm -q --queryformat='%{evr}.%{arch}' kernel-core)" && \
+    /usr/bin/dracut --no-hostonly --kver "${KERNEL_VERSION}" --reproducible -v --add ostree -f "/lib/modules/${KERNEL_VERSION}/initramfs.img" && \
+    chmod 0600 "/lib/modules/${KERNEL_VERSION}/initramfs.img"
 
 CMD ["/sbin/init"]
 
