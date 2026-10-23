@@ -10,6 +10,7 @@ export default_tag := env_var("DEFAULT_TAG")
 export bib_image := env_var("BIB_IMAGE")
 export base_image_name := env_var("BASE_IMAGE_NAME")
 export base_image_tag := env_var("BASE_IMAGE_TAG")
+export nvidia_variant := env_var_or_default("NVIDIA_VARIANT", "proprietary")
 
 alias build-vm := build-qcow2
 alias rebuild-vm := rebuild-qcow2
@@ -104,6 +105,7 @@ build $target_image=image_name $tag=default_tag:
     LABELS=()
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_NAME={{ base_image_name }}")
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_TAG={{ base_image_tag }}")
+    BUILD_ARGS+=("--build-arg" "NVIDIA_VARIANT={{ nvidia_variant }}")
     if [[ -z "$(git status -s)" ]]; then
         GIT_SHA=$(git rev-parse --short HEAD)
         LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/{{ repo_organization }}/{{ image_name }}/${GIT_SHA}/README.md")
