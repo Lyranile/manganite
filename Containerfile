@@ -1,13 +1,20 @@
-# Allow build scripts to be referenced without being copied into the final image
+# Image-template pattern: derive from ublue base image
+# Use base-main (minimal, no DE) or base-nvidia (with NVIDIA pre-built)
+#
+# Non-NVIDIA (default):
+#   podman build -f Containerfile -t manganite .
+#
+# NVIDIA:
+#   podman build --build-arg BASE_IMAGE_NAME=base-nvidia --build-arg BASE_IMAGE_TAG=latest -f Containerfile -t manganite .
 
 ARG BASE_IMAGE_NAME="base-main"
 ARG BASE_IMAGE_TAG="44"
 ARG BASE_IMAGE="ghcr.io/ublue-os/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}"
 
-# Repos to enable permanently for the entire OS
+# Repos to enable permanently
 ARG ENABLE_REPOS="terra"
 
-# Packages to install (Fedora repos + the repos listed above)
+# Packages to install
 ARG INSTALL_PACKAGES="git \
   papirus-icon-theme \
   bibata-cursor-theme \
@@ -43,25 +50,19 @@ ARG INSTALL_PACKAGES="git \
   fzf \
   duf"
 
-ARG AKMODS_FLAVOR="main"
-
-FROM ghcr.io/ublue-os/akmods:${AKMODS_FLAVOR}-${BASE_IMAGE_TAG} AS akmods
-FROM ghcr.io/ublue-os/akmods-nvidia-open:${AKMODS_FLAVOR}-${BASE_IMAGE_TAG} AS akmods-nvidia
-
 FROM scratch AS ctx
-COPY build_files /
+COPY system_files /system_files
 
 FROM ${BASE_IMAGE}
 
-# Build args declared before the first FROM are not in scope after it
-ARG ENABLE_REPOS
-ARG INSTALL_PACKAGES
-ARG AKMODS_FLAVOR
-ARG BASE_IMAGE_TAG
+# Copy system files overlay
+RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
+    --mount=type=cache,dst=/var/cache \
+    --mount=type=cache,dst=/var/log \
+    --mount=type=tmpfs,dst=/tmp \
+    cp -avf /ctx/system_files/. /
 
-COPY --from=ctx / /
-
-# Enable the extra repos for the whole OS
+# Enable extra repos
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     for repo in ${ENABLE_REPOS}; do \
         dnf -y config-manager setopt "${repo}.enabled=1"; \
@@ -77,10 +78,6 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y copr enable duxlabs/dms && \
     dnf -y install dms --setopt=install_weak_deps=False
 
-# Bind DMS to the MangoWC session
-RUN mkdir -p /usr/lib/systemd/user/mango-session.target.wants && \
-    ln -sf /usr/lib/systemd/user/dms.service /usr/lib/systemd/user/mango-session.target.wants/dms.service || true
-
 # Configure Flatpak (remove Fedora remote, add Flathub)
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf remove -y fedora-flathub-remote 2>/dev/null || true && \
@@ -88,7 +85,7 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     curl --retry 3 -Lo /etc/flatpak/remotes.d/flathub.flatpakrepo https://dl.flathub.org/repo/flathub.flatpakrepo && \
     mv -f /usr/lib/systemd/system/flatpak-add-flathub-repos.service /usr/lib/systemd/system/flatpak-add-fedora-repos.service 2>/dev/null || true
 
-# Enable base variant services
+# Enable base variant services (getty, update timers)
 RUN systemctl enable getty@tty1 && \
     systemctl enable rpm-ostreed-automatic.timer flatpak-system-update.timer && \
     systemctl --global enable flatpak-user-update.timer
@@ -97,25 +94,9 @@ RUN systemctl enable getty@tty1 && \
 RUN cp /usr/share/ublue-os/update-services/etc/rpm-ostreed.conf /etc/rpm-ostreed.conf 2>/dev/null || true && \
     sed -Ei "s/secure_path = (.*)/secure_path = \1:\/home\/linuxbrew\/.linuxbrew\/bin/" /etc/sudoers
 
-# NVIDIA: install via ublue's prebuilt akmods
+# Disable COPRs so they don't end up enabled on the final image
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
-    --mount=type=bind,from=akmods,src=/rpms/common,dst=/tmp/akmods-rpms \
-    --mount=type=bind,from=akmods,src=/kernel-rpms,dst=/tmp/kernel-rpms \
-    --mount=type=bind,from=akmods-nvidia,src=/rpms,dst=/tmp/akmods-nv-rpms \
-    for pkg in kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra; do \
-        rpm --erase "$pkg" --nodeps 2>/dev/null || true; \
-    done && \
-    dnf -y install --setopt=tsflags=noscripts /tmp/kernel-rpms/kernel-*.rpm && \
-    (dnf -y versionlock add kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra 2>/dev/null || true) && \
-    IMAGE_NAME="SKIP_PACKAGE_INSTALL" AKMODNV_PATH=/tmp/akmods-nv-rpms /tmp/akmods-nv-rpms/ublue-os/nvidia-install.sh && \
-    echo 'add_drivers+=("nvidia")' > /etc/libdnf5/protected.d/nvidia.conf && \
-    rm -f /usr/bin/chsh /usr/bin/lchsh
-
-# Rebuild initramfs
-RUN --mount=type=cache,dst=/var/cache/libdnf5 \
-    KVER="$(rpm -q --queryformat='%{evr}.%{arch}' kernel-core)" && \
-    /usr/bin/dracut --no-hostonly --kver "$KVER" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$KVER/initramfs.img" && \
-    chmod 0600 "/usr/lib/modules/$KVER/initramfs.img"
+    dnf -y copr disable duxlabs/dms duxlabs/dux 2>/dev/null || true
 
 # GRUB configuration
 RUN if [ -f /etc/default/grub ]; then \
@@ -127,8 +108,7 @@ RUN if [ -f /etc/default/grub ]; then \
     fi
 
 # Cleanup
-RUN rm -rf /tmp/* /var/tmp/* 2>/dev/null || true
-CMD ["/sbin/init"]
+RUN rm -rf /tmp/* /usr/etc
 
 # Linting
 RUN bootc container lint
