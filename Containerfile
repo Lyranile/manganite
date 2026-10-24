@@ -11,10 +11,10 @@ ARG BASE_IMAGE_NAME="base-main"
 ARG BASE_IMAGE_TAG="44"
 ARG BASE_IMAGE="ghcr.io/ublue-os/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}"
 
-# Repos to enable permanently for the entire OS
+# Repos to enable permanently
 ARG ENABLE_REPOS="terra"
 
-# Packages to install (Fedora repos + the repos listed above)
+# Packages to install
 ARG INSTALL_PACKAGES="git \
   papirus-icon-theme \
   bibata-cursor-theme \
@@ -51,12 +51,9 @@ ARG INSTALL_PACKAGES="git \
   duf"
 
 FROM scratch AS ctx
-COPY build_files /
 COPY system_files /system_files
 
 FROM ${BASE_IMAGE}
-
-### MODIFICATIONS
 
 # Copy system files overlay
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
@@ -113,5 +110,5 @@ RUN if [ -f /etc/default/grub ]; then \
 # Cleanup
 RUN rm -rf /tmp/* /usr/etc
 
-### LINTING
+# Linting
 RUN bootc container lint
