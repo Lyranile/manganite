@@ -3,7 +3,9 @@
 [![Build](https://github.com/Lyranile/manganite/actions/workflows/build.yml/badge.svg)](https://github.com/Lyranile/manganite/actions/workflows/build.yml)
 [![Lint](https://github.com/Lyranile/manganite/actions/workflows/lint.yml/badge.svg)](https://github.com/Lyranile/manganite/actions/workflows/lint.yml)
 
-A minimal [bootc](https://github.com/bootc-dev/bootc) image that starts from the NVIDIA base and layers the [mangowm](https://mangowm.github.io/) tiling compositor and the [DankMaterialShell](https://danklinux.com/docs/dankmaterialshell/) (DMS) desktop shell on top.
+A minimal [bootc](https://github.com/bootc-dev/bootc) image that starts from the Universal Blue [`base-main`](https://github.com/orgs/ublue-os/packages) image (a minimal, desktop-free Fedora base) and layers the [mangowm](https://mangowm.github.io/) tiling compositor and the [DankMaterialShell](https://danklinux.com/docs/dankmaterialshell/) (DMS) desktop shell on top.
+
+An optional NVIDIA build layers prebuilt open NVIDIA kernels modules from the same prebuilt ublue akmods images used by ublue's own builds and pins the kernel to the exact version the modules were built against. The archived `ghcr.io/ublue-os/base-nvidia` image (last updated for Fedora 37 in 2023) is **not** used.
 
 # Community
 
@@ -132,10 +134,13 @@ The [Containerfile](./Containerfile) defines the operations used to customize th
 
 The [build_files](./build_files) directory mirrors the image root: everything under it is copied to the same path in the image, so any file you drop there ships as-is. The only build steps that cannot be expressed as files are enabling the extra repos and installing packages, both done inline in the Containerfile and parameterized by the `ENABLE_REPOS` and `INSTALL_PACKAGES` build args.
 
-- `etc/yum.repos.d/` - Terra and DMS COPR repo files, shipped `enabled=0` and permanently enabled during the build via `dnf config-manager setopt`, so users of the final image also get them (e.g. for `rpm-ostree install` of Terra/COPR packages)
-- `etc/pki/rpm-gpg/RPM-GPG-KEY-terra44` - Terra signing key
-- `usr/lib/systemd/system-preset/50-manganite.preset` - enables `gdm.service`
-- `etc/skel/` - user dotfiles (mango config, DMS settings, micro/starship/uv/bun, systemd session units), copied into every new user's home on first login
+- `etc/yum.repos.d/` - Terra repo file, shipped `enabled=0` and permanently enabled during the build via `dnf config-manager setopt`, so users of the final image also get it (e.g. for `rpm-ostree install` of Terra packages)
+- `etc/pki/rpm-gpg/RPM-GPG-KEY-terra44` - Terra signing key consumed by the repo's `gpgkey` path
+- `usr/lib/systemd/system/flatpak-nuke-fedora.service` - removes Fedora flatpak remotes at boot before Fedora's own flatpak repo service runs
+- `usr/lib/systemd/system-preset/50-manganite.preset` - enables `flatpak-nuke-fedora.service` on disk-image installs (also enabled explicitly in the Containerfile)
+- `etc/skel/` - user dotfiles (mango config with `exec_once=dms run` autostart, DMS settings, micro/starship/uv/bun, systemd session units), copied into every new user's home on first login
+
+The DMS/quickshell packages come from the [`duxlabs/dms`](https://copr.fedorainfracloud.org/coprs/duxlabs/dms/) and [`duxlabs/dux`](https://copr.fedorainfracloud.org/coprs/duxlabs/dux/) COPRs, enabled briefly during the build and kept disabled on the final image (the repo definitions remain in `/etc/yum.repos.d/` for future `dnf copr enable duxlabs/dms` use).
 
 ## build.yml
 
@@ -185,6 +190,8 @@ These are all sourced from the `image-template.env` file.
 - `image_name`: The name of the image (default: "manganite").
 - `default_tag`: The default tag for the image (default: "latest").
 - `bib_image`: The Bootc Image Builder (BIB) image (default: "quay.io/centos-bootc/bootc-image-builder:latest").
+- `base_image_name` / `base_image_tag`: The Universal Blue base image and tag (default: "base-main" / "44").
+- `nvidia_variant`: "none" builds the plain image; any other value (default: "proprietary") layers prebuilt open NVIDIA akmods and pins the kernel to the matching akmods version.
 
 ## Building The Image
 
@@ -282,7 +289,26 @@ Runs shfmt on all Bash scripts.
 
 ## Additional resources
 
-For additional driver support, ublue maintains a set of scripts and container images available at [ublue-akmod](https://github.com/ublue-os/akmods). These images include the necessary scripts to install multiple kernel drivers within the container (Nvidia, OpenRazer, Framework...). The documentation provides guidance on how to properly integrate these drivers into your container image.
+### NVIDIA support (optional)
+
+Default builds use `NVIDIA_VARIANT="proprietary"` from `image-template.env`, which maps to `--build-arg NVIDIA=true`:
+
+```bash
+# via just (uses image-template.env)
+NVIDIA_VARIANT=proprietary just build
+
+# or directly
+podman build --build-arg NVIDIA=true -f Containerfile -t manganite .
+```
+
+This flow mirrors ublue's own images:
+
+1. `ghcr.io/ublue-os/akmods:main-44` ships signed Fedora kernel rpms and ublue akmods addons.
+2. `ghcr.io/ublue-os/akmods-nvidia-open:main-44` ships prebuilt open NVIDIA kernel modules (`kmod-nvidia`) built against that exact kernel, plus `nvidia-install.sh` and the `ublue-os-nvidia-addons` rpm (which carries the driver/container-toolkit repo definitions).
+3. The build erases the stock kernel, installs the akmods-matched kernel (with the same kernel-install shim approach ublue uses), pins it with `versionlock`, and runs `nvidia-install.sh` to install the driver stack (including 32-bit multilib userspace for Steam-style workloads).
+4. Both akmods images are fetched during any build (same as upstream's Containerfile wiring), but the install steps only run when `NVIDIA=true`.
+
+Kernel updates arrive with rebases to a newer image build, which ships the matching `kmod-nvidia` — the kernel pin guarantees the image is always internally consistent.
 
 ## Community Examples
 
