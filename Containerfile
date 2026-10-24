@@ -1,4 +1,11 @@
-# Allow build scripts to be referenced without being copied into the final image
+# Image-template pattern: derive from ublue base image
+# Use base-main (minimal, no DE) or base-nvidia (with NVIDIA pre-built)
+#
+# Non-NVIDIA (default):
+#   podman build -f Containerfile -t manganite .
+#
+# NVIDIA:
+#   podman build --build-arg BASE_IMAGE_NAME=base-nvidia --build-arg BASE_IMAGE_TAG=latest -f Containerfile -t manganite .
 
 ARG BASE_IMAGE_NAME="base-main"
 ARG BASE_IMAGE_TAG="44"
@@ -43,20 +50,19 @@ ARG INSTALL_PACKAGES="git \
   fzf \
   duf"
 
-ARG AKMODS_FLAVOR="main"
-
-FROM ghcr.io/ublue-os/akmods:${AKMODS_FLAVOR}-${BASE_IMAGE_TAG} AS akmods
-FROM ghcr.io/ublue-os/akmods-nvidia-open:${AKMODS_FLAVOR}-${BASE_IMAGE_TAG} AS akmods-nvidia
+FROM scratch AS ctx
+COPY build_files /
+COPY system_files /system_files
 
 FROM ${BASE_IMAGE}
 
-# Build args declared before the first FROM are not in scope after it
-ARG ENABLE_REPOS
-ARG INSTALL_PACKAGES
-ARG AKMODS_FLAVOR
-ARG BASE_IMAGE_TAG
 
-COPY build_files/ /
+# Copy system files overlay
+RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
+    --mount=type=cache,dst=/var/cache \
+    --mount=type=cache,dst=/var/log \
+    --mount=type=tmpfs,dst=/tmp \
+    cp -avf /ctx/system_files/. /
 
 # Enable the extra repos for the whole OS
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
@@ -64,7 +70,7 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
         dnf -y config-manager setopt "${repo}.enabled=1"; \
     done
 
-# Install packages from Fedora and the enabled repos
+# Install packages from Fedora and enabled repos
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y install ${INSTALL_PACKAGES}
 
@@ -74,34 +80,27 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y copr enable duxlabs/dms && \
     dnf -y install dms --setopt=install_weak_deps=False
 
-# Bind DMS to the MangoWC session
-RUN mkdir -p /usr/lib/systemd/user/mango-session.target.wants && \
-    ln -sf /usr/lib/systemd/user/dms.service /usr/lib/systemd/user/mango-session.target.wants/dms.service || true
-
-# NVIDIA: install via ublue's prebuilt akmods (nvidia-open for Fedora 44),
-# replacing the kernel with the one shipped by the akmods image so the kmod
-# matches.
+# Configure Flatpak (remove Fedora remote, add Flathub)
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
-    --mount=type=bind,from=akmods,src=/rpms/common,dst=/tmp/akmods-rpms \
-    --mount=type=bind,from=akmods,src=/kernel-rpms,dst=/tmp/kernel-rpms \
-    --mount=type=bind,from=akmods-nvidia,src=/rpms,dst=/tmp/akmods-nv-rpms \
-    for pkg in kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra; do \
-        rpm --erase "$pkg" --nodeps 2>/dev/null || true; \
-    done && \
-    dnf -y install --setopt=tsflags=noscripts /tmp/kernel-rpms/kernel-*.rpm && \
-    (dnf -y versionlock add kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra 2>/dev/null || true) && \
-    IMAGE_NAME="SKIP_PACKAGE_INSTALL" AKMODNV_PATH=/tmp/akmods-nv-rpms /tmp/akmods-nv-rpms/ublue-os/nvidia-install.sh && \
-    echo 'add_drivers+=("nvidia")' > /etc/libdnf5/protected.d/nvidia.conf && \
-    rm -f /usr/bin/chsh /usr/bin/lchsh && \
-    sed -Ei "s/secure_path = (.*)/secure_path = \1:\/home\/linuxbrew\/.linuxbrew\/bin/" /etc/sudoers || true
+    dnf remove -y fedora-flathub-remote 2>/dev/null || true && \
+    mkdir -p /etc/flatpak/remotes.d/ && \
+    curl --retry 3 -Lo /etc/flatpak/remotes.d/flathub.flatpakrepo https://dl.flathub.org/repo/flathub.flatpakrepo && \
+    mv -f /usr/lib/systemd/system/flatpak-add-flathub-repos.service /usr/lib/systemd/system/flatpak-add-fedora-repos.service 2>/dev/null || true
 
-# Rebuild initramfs for the (possibly replaced) kernel
-RUN --mount=type=cache,dst=/var/cache/libdnf5 \
-    KVER="$(rpm -q --queryformat='%{evr}.%{arch}' kernel-core)" && \
-    /usr/bin/dracut --no-hostonly --kver "$KVER" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$KVER/initramfs.img" && \
-    chmod 0600 "/usr/lib/modules/$KVER/initramfs.img"
+# Enable base variant services (getty, update timers)
+RUN systemctl enable getty@tty1 && \
+    systemctl enable rpm-ostreed-automatic.timer flatpak-system-update.timer && \
+    systemctl --global enable flatpak-user-update.timer
 
-# GRUB
+# Configure staged updates and sudo
+RUN cp /usr/share/ublue-os/update-services/etc/rpm-ostreed.conf /etc/rpm-ostreed.conf 2>/dev/null || true && \
+    sed -Ei "s/secure_path = (.*)/secure_path = \1:\/home\/linuxbrew\/.linuxbrew\/bin/" /etc/sudoers
+
+# Disable COPRs so they don't end up enabled on the final image
+# RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+#     dnf -y copr disable duxlabs/dms duxlabs/dux 2>/dev/null || true
+
+# GRUB configuration
 RUN if [ -f /etc/default/grub ]; then \
         sed -i 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT=60/' /etc/default/grub; \
         grep -q '^GRUB_DEFAULT=' /etc/default/grub || echo 'GRUB_DEFAULT=saved' >> /etc/default/grub; \
@@ -110,6 +109,8 @@ RUN if [ -f /etc/default/grub ]; then \
         grep -q '^GRUB_DISABLE_OS_PROBER=' /etc/default/grub || echo 'GRUB_DISABLE_OS_PROBER=false' >> /etc/default/grub; \
     fi
 
-CMD ["/sbin/init"]
+# Cleanup
+RUN rm -rf /tmp/* /usr/etc
 
+# Linting
 RUN bootc container lint
