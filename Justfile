@@ -105,7 +105,11 @@ build $target_image=image_name $tag=default_tag:
     LABELS=()
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_NAME={{ base_image_name }}")
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_TAG={{ base_image_tag }}")
-    BUILD_ARGS+=("--build-arg" "NVIDIA_VARIANT={{ nvidia_variant }}")
+    BUILD_ARGS+=("--build-arg" "IMAGE_NAME={{ image_name }}")
+    # NVIDIA is enabled for any variant other than "none" (e.g. "proprietary")
+    if [[ "{{ nvidia_variant }}" != "none" ]]; then
+        BUILD_ARGS+=("--build-arg" "NVIDIA=true")
+    fi
     if [[ -z "$(git status -s)" ]]; then
         GIT_SHA=$(git rev-parse --short HEAD)
         LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/{{ repo_organization }}/{{ image_name }}/${GIT_SHA}/README.md")
