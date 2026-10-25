@@ -105,9 +105,6 @@ build $target_image=image_name $tag=default_tag:
     LABELS=()
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_NAME={{ base_image_name }}")
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_TAG={{ base_image_tag }}")
-    # Reaches the akmods nvidia-install.sh, which runs under `set -u` and reads
-    # $IMAGE_NAME unguarded (mirrors upstream, which always passes IMAGE_NAME)
-    BUILD_ARGS+=("--build-arg" "IMAGE_NAME={{ image_name }}")
     # NVIDIA is enabled for any variant other than "none" (e.g. "proprietary")
     if [[ "{{ nvidia_variant }}" != "none" ]]; then
         BUILD_ARGS+=("--build-arg" "NVIDIA=true")
