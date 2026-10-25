@@ -65,7 +65,6 @@ ARG ENABLE_REPOS
 ARG INSTALL_PACKAGES
 ARG IMAGE_NAME
 
-### MODIFICATIONS
 
 # Copy system files to the root filesystem
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
