@@ -307,6 +307,7 @@ This flow mirrors ublue's own images:
 2. `ghcr.io/ublue-os/akmods-nvidia-open:main-44` ships prebuilt open NVIDIA kernel modules (`kmod-nvidia`) built against that exact kernel, plus `nvidia-install.sh` and the `ublue-os-nvidia-addons` rpm (which carries the driver/container-toolkit repo definitions).
 3. The build erases the stock kernel, installs the akmods-matched kernel (with the same kernel-install shim approach ublue uses), pins it with `versionlock`, and runs `nvidia-install.sh` to install the driver stack (including 32-bit multilib userspace for Steam-style workloads).
 4. Both akmods images are fetched during any build (same as upstream's Containerfile wiring), but the install steps only run when `NVIDIA=true`.
+5. `IMAGE_NAME` from `image-template.env` is passed as `--build-arg IMAGE_NAME=...` and declared in the Containerfile, mirroring upstream, which always defines it: `nvidia-install.sh` runs under `set -u` and reads it unguarded (only `silverblue`/`kinoite` variants receive extra packages like `supergfxctl`; any other value takes the default branch, which is what manganite uses).
 
 Kernel updates arrive with rebases to a newer image build, which ships the matching `kmod-nvidia` — the kernel pin guarantees the image is always internally consistent.
 

@@ -63,6 +63,10 @@ FROM ${BASE_IMAGE}
 ARG NVIDIA
 ARG ENABLE_REPOS
 ARG INSTALL_PACKAGES
+# Always defined: akmods' nvidia-install.sh runs under `set -u` and reads it
+# unguarded (upstream declares/accepts it in exactly this way; only
+# silverblue/kinoite get extra packages, so any value is fine for us)
+ARG IMAGE_NAME="${IMAGE_NAME:-manganite}"
 
 ### MODIFICATIONS
 
