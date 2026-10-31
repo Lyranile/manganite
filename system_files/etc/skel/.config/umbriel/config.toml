@@ -24,24 +24,19 @@ files = ["noctalia.toml"]
 # https://docs.noctalia.dev/umbriel/configuration/#general
 #
 [general]
-autostart = ["noctalia", "kitty"]
+autostart = ["noctalia"]
 mod_key = "Super"
 xwayland = true
-xwayland_native_resolution = false
+# Sharp X11 apps and games on scaled outputs; they see physical resolutions.
+xwayland_native_resolution = true
+# Umbriel announces the X11 interface scale and cursor theme through XSETTINGS.
+# Turn this off to run your own manager, such as xsettingsd.
 xwayland_xsettings = true
 show_cheatsheet = true
 focus_on_activate = true
+# Modal dialogs hang on their parent window and follow it. Turn this off to keep them ordinary windows.
 attach_modal_dialogs = true
 honor_restored_maximize = false
-# autostart = ["noctalia", "kitty"]
-# xwayland = false
-# Sharp X11 apps and games on scaled outputs; they see physical resolutions.
-# xwayland_native_resolution = true
-# Umbriel announces the X11 interface scale and cursor theme through XSETTINGS.
-# Turn this off to run your own manager, such as xsettingsd.
-# xwayland_xsettings = false
-# Modal dialogs hang on their parent window and follow it. Turn this off to keep them ordinary windows.
-# attach_modal_dialogs = false
 
 [environment]
 WLR_RENDERER = "gles2"
@@ -75,10 +70,10 @@ ELECTRON_OZONE_PLATFORM_HINT = "auto"
 # https://docs.noctalia.dev/umbriel/outputs/
 #
 [output.DP-2]
-mode = "2560x1440@120"
+mode = "2560x1440@144"
 position = [0, 0]
 transform = "90"
-scale = 1.5
+scale = 1.25
 vrr = "disabled"
 hdr = "auto"
 focus_at_startup = true
@@ -86,9 +81,9 @@ workspace_axis = "horizontal"
 
 [output.DP-3]
 mode = "3440x1440@144"
-position = [960, 0]
+position = [1280, 0]
 # transform = "90"
-scale = 1.5
+scale = 1.25
 vrr = "disabled"
 hdr = "auto"
 # sdr_transfer = "gamma22" # Or "srgb" for piecewise SDR decoding in HDR.
