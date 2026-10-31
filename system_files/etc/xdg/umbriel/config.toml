@@ -160,6 +160,10 @@ accel_profile = "flat"
 tap = true
 accel_profile = "flat"
 
+[input.cursor]
+theme = "Bibata-Modern-Ice"
+size = 24
+
 # Focus can follow the pointer across tiled, floating, and pinned windows.
 #
 # [input.focus]
