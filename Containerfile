@@ -90,7 +90,6 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
 # Enable DMS and install minimal dependencies
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y copr enable duxlabs/dms && \
-    dnf -y copr enable duxlabs/dux && \
     dnf -y install dms --setopt=install_weak_deps=False
 
 # Disable COPRs so they do not stay enabled on the final system
