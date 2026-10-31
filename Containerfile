@@ -15,42 +15,6 @@ ARG NVIDIA="true"
 # Repositories to enable
 ARG ENABLE_REPOS="terra"
 
-# Packages from Fedora repos
-ARG INSTALL_PACKAGES="git \
-  papirus-icon-theme \
-  bibata-cursor-theme \
-  xdg-desktop-portal-gtk \
-  xdg-desktop-portal-wlr \
-  brightnessctl \
-  wl-clipboard \
-  i2c-tools \
-  os-prober \
-  playerctl \
-  cliphist \
-  polkit \
-  android-tools \
-  fastfetch \
-  go-task \
-  cava \
-  just \
-  make \
-  pnpm \
-  gcc \
-  uv \
-  alacritty \
-  starship \
-  mangowm \
-  zoxide \
-  micro \
-  atuin \
-  procs \
-  yazi \
-  zsh \
-  eza \
-  bat \
-  fzf \
-  duf"
-
 # Allow build scripts to be referenced without being copied into the final image
 FROM scratch AS ctx
 COPY system_files /system_files
@@ -62,7 +26,6 @@ FROM ${BASE_IMAGE}
 
 ARG NVIDIA
 ARG ENABLE_REPOS
-ARG INSTALL_PACKAGES
 ARG IMAGE_NAME
 
 # Copy system files to the root filesystem
@@ -83,19 +46,50 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
         dnf -y config-manager setopt "${repo}.enabled=1"; \
     done
 
-# Install packages from repositories
+# Compositor + shell
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
-    dnf -y install ${INSTALL_PACKAGES}
+    dnf -y install \
+      umbriel-nightly xdg-desktop-portal-umbriel-nightly noctalia
 
-# Enable DMS and install minimal dependencies
+# Portals
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
-    dnf -y copr enable duxlabs/dms && \
-    dnf -y install dms --setopt=install_weak_deps=False
+    dnf -y install \
+      xdg-desktop-portal xdg-desktop-portal-gtk
 
-# Disable COPRs so they do not stay enabled on the final system
+# X11 (optional: legacy X11 apps under Umbriel)
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
-    dnf -y copr disable duxlabs/dms && \
-    dnf -y copr disable duxlabs/dux
+    dnf -y install \
+      xorg-x11-server-Xwayland
+
+# Terminals
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    dnf -y install \
+      starship ghostty kitty
+
+# Core / system
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    dnf -y install \
+      os-prober polkit just make pnpm gcc git uv go-task
+
+# Shell / CLI tools
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    dnf -y install \
+      fastfetch zoxide atuin micro procs cava yazi bat duf eza fzf zsh
+
+# Hardware / media control
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    dnf -y install \
+      brightnessctl i2c-tools playerctl
+
+# Themes
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    dnf -y install \
+      bibata-cursor-theme papirus-icon-theme
+
+# Mobile dev
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    dnf -y install \
+      android-tools
 
 # Install prebuilt open NVIDIA akmods.
 RUN --mount=type=bind,from=akmods,source=/kernel-rpms,target=/tmp/kernel-rpms \
