@@ -24,7 +24,7 @@ files = ["noctalia.toml"]
 # https://docs.noctalia.dev/umbriel/configuration/#general
 #
 [general]
-autostart = ["noctalia --daemon"]
+autostart = ["noctalia"]
 mod_key = "Super"
 xwayland = true
 # Sharp X11 apps and games on scaled outputs; they see physical resolutions.
@@ -70,10 +70,10 @@ ELECTRON_OZONE_PLATFORM_HINT = "auto"
 # https://docs.noctalia.dev/umbriel/outputs/
 #
 [output.DP-2]
-mode = "2560x1440@120"
+mode = "2560x1440@144"
 position = [0, 0]
 transform = "90"
-scale = 1.5
+scale = 1.25
 vrr = "disabled"
 hdr = "auto"
 focus_at_startup = true
@@ -81,9 +81,9 @@ workspace_axis = "horizontal"
 
 [output.DP-3]
 mode = "3440x1440@144"
-position = [960, 0]
+position = [1280, 0]
 # transform = "90"
-scale = 1.5
+scale = 1.25
 vrr = "disabled"
 hdr = "auto"
 # sdr_transfer = "gamma22" # Or "srgb" for piecewise SDR decoding in HDR.
@@ -160,10 +160,6 @@ accel_profile = "flat"
 tap = true
 accel_profile = "flat"
 
-[input.cursor]
-theme = "Bibata-Modern-Ice"
-size = 24
-
 # Focus can follow the pointer across tiled, floating, and pinned windows.
 #
 # [input.focus]
@@ -184,38 +180,38 @@ size = 24
 [keybinds]
 
 # Applications and session
-"Mod+Return" = { action = "spawn:ghostty", repeat = false }
-"Mod+T" = { action = "spawn:ghostty", repeat = false }
+"Mod+Return" = { action = "spawn ghostty", repeat = false }
+"Mod+T" = { action = "spawn ghostty", repeat = false }
 "Mod+D" = { action = "overview-toggle", repeat = false }
 "Mod+G" = { action = "window-toggle-floating", repeat = false }
-"Mod+S" = "window-set-primary-extent:0.5"
-"Mod+A" = { action = "spawn:noctalia msg panel-toggle control-center" }
-"Mod+I" = { action = "spawn:noctalia msg settings-toggle", repeat = false }
-"Mod+B" = { action = "spawn:noctalia msg wallpaper-next", repeat = false }
-"Mod+Shift+B" = { action = "spawn:noctalia msg wallpaper-previous", repeat = false }
-"Mod+Ctrl+B" = { action = "spawn:noctalia msg wallpaper-random", repeat = false }
-"Mod+Y" = { action = "spawn:noctalia msg panel-toggle tray-drawer" }
+"Mod+S" = "window-set-primary-extent 0.5"
+"Mod+A" = { action = "spawn noctalia msg panel-toggle control-center" }
+"Mod+I" = { action = "spawn noctalia msg settings-toggle", repeat = false }
+"Mod+B" = { action = "spawn noctalia msg wallpaper-next", repeat = false }
+"Mod+Shift+B" = { action = "spawn noctalia msg wallpaper-previous", repeat = false }
+"Mod+Ctrl+B" = { action = "spawn noctalia msg wallpaper-random", repeat = false }
+"Mod+Y" = { action = "spawn noctalia msg panel-toggle tray-drawer" }
 "Mod+grave" = { action = "scratchpad-toggle", repeat = false }
-"Mod+V" = { action = "spawn:noctalia msg panel-toggle clipboard", repeat = false }
-"Mod+N" = { action = "spawn:noctalia msg panel-toggle control-center notifications" }
-"Mod+X" = { action = "spawn:noctalia msg panel-toggle session", repeat = false }
-"Mod" = "spawn:noctalia msg panel-toggle launcher"
+"Mod+V" = { action = "spawn noctalia msg panel-toggle clipboard", repeat = false }
+"Mod+N" = { action = "spawn noctalia msg panel-toggle control-center notifications" }
+"Mod+X" = { action = "spawn noctalia msg panel-toggle session", repeat = false }
+"Mod" = "spawn noctalia msg panel-toggle launcher"
 "Mod+Q" = { action = "window-close", repeat = false }
 "Mod+Shift+Q" = "session-quit"
-"Mod+Escape" = { action = "spawn:plasma-systemmonitor", repeat = false }
+"Mod+Escape" = { action = "spawn plasma-systemmonitor", repeat = false }
 "Mod+Shift+Escape" = { action = "shortcuts-inhibit-toggle", allow_when_inhibited = true, repeat = false }
 
 # Media, volume and brightness keys from any input device, routed through the
 # Noctalia shell so its OSDs show. Safe while the session is locked.
 # https://docs.noctalia.dev/noctalia/compositor-settings/umbriel
-"XF86AudioRaiseVolume" = { action = "spawn:noctalia msg volume-up", allow_when_locked = true }
-"XF86AudioLowerVolume" = { action = "spawn:noctalia msg volume-down", allow_when_locked = true }
-"XF86AudioMute" = { action = "spawn:noctalia msg volume-mute", allow_when_locked = true, repeat = false }
-"XF86AudioPlay" = { action = "spawn:noctalia msg media toggle", allow_when_locked = true, repeat = false }
-"XF86AudioNext" = { action = "spawn:noctalia msg media next", allow_when_locked = true }
-"XF86AudioPrev" = { action = "spawn:noctalia msg media previous", allow_when_locked = true }
-"XF86MonBrightnessUp" = { action = "spawn:noctalia msg brightness-up", allow_when_locked = true }
-"XF86MonBrightnessDown" = { action = "spawn:noctalia msg brightness-down", allow_when_locked = true }
+"XF86AudioRaiseVolume" = { action = "spawn noctalia msg volume-up", allow_when_locked = true }
+"XF86AudioLowerVolume" = { action = "spawn noctalia msg volume-down", allow_when_locked = true }
+"XF86AudioMute" = { action = "spawn noctalia msg volume-mute", allow_when_locked = true, repeat = false }
+"XF86AudioPlay" = { action = "spawn noctalia msg media toggle", allow_when_locked = true, repeat = false }
+"XF86AudioNext" = { action = "spawn noctalia msg media next", allow_when_locked = true }
+"XF86AudioPrev" = { action = "spawn noctalia msg media previous", allow_when_locked = true }
+"XF86MonBrightnessUp" = { action = "spawn noctalia msg brightness-up", allow_when_locked = true }
+"XF86MonBrightnessDown" = { action = "spawn noctalia msg brightness-down", allow_when_locked = true }
 
 # Focus and movement
 "Mod+Left" = "window-focus-left"
@@ -225,7 +221,7 @@ size = 24
 "Mod+H" = "window-focus-left"
 "Mod+J" = "window-focus-down"
 "Mod+K" = "window-focus-up"
-"Mod+L" = { action = "spawn:noctalia msg session lock" }
+"Mod+L" = { action = "spawn noctalia msg session lock" }
 "Mod+F1" = "window-focus-next"
 "Mod+Shift+F1" = { action = "cheatsheet-toggle", repeat = false }
 "Mod+Shift+Left" = "column-move-left"
@@ -239,21 +235,21 @@ size = 24
 "Alt+Tab" = "window-focus-next"
 "Alt+Shift+Tab" = "window-focus-previous"
 
-"Print" = { action = "spawn:noctalia msg screenshot-region", repeat = false }
-"Shift+Print" = { action = "spawn:noctalia msg screenshot-fullscreen", repeat = false }
-"Ctrl+Print" = { action = "spawn:noctalia msg screenshot-fullscreen all", repeat = false }
-"Alt+Print" = { action = "spawn:noctalia msg screenshot-annotate", repeat = false }
-"Sys_Req" = { action = "spawn:noctalia msg screenshot-region", repeat = false }
-"Shift+Sys_Req" = { action = "spawn:noctalia msg screenshot-fullscreen", repeat = false }
-"Ctrl+Sys_Req" = { action = "spawn:noctalia msg screenshot-fullscreen all", repeat = false }
-"Alt+Sys_Req" = { action = "spawn:noctalia msg screenshot-annotate", repeat = false }
+"Print" = { action = "spawn noctalia msg screenshot-region", repeat = false }
+"Shift+Print" = { action = "spawn noctalia msg screenshot-fullscreen", repeat = false }
+"Ctrl+Print" = { action = "spawn noctalia msg screenshot-fullscreen all", repeat = false }
+"Alt+Print" = { action = "spawn noctalia msg screenshot-annotate", repeat = false }
+"Sys_Req" = { action = "spawn noctalia msg screenshot-region", repeat = false }
+"Shift+Sys_Req" = { action = "spawn noctalia msg screenshot-fullscreen", repeat = false }
+"Ctrl+Sys_Req" = { action = "spawn noctalia msg screenshot-fullscreen all", repeat = false }
+"Alt+Sys_Req" = { action = "spawn noctalia msg screenshot-annotate", repeat = false }
 
 # Window state and layout
 "Mod+Shift+T" = { action = "window-focus-switch-floating", repeat = false }
-"Mod+P" = { action = "spawn:kfind", repeat = false }
-"Mod+Shift+P" = "workspace-set-layout:toggle:master,scrolling"
-"Mod+E" = { action = "spawn:dolphin", repeat = false }
-"Mod+Shift+E" = "window-set-primary-extent:1.0"
+"Mod+P" = { action = "spawn kfind", repeat = false }
+"Mod+Shift+P" = "workspace-set-layout toggle master scrolling"
+"Mod+E" = { action = "spawn dolphin", repeat = false }
+"Mod+Shift+E" = "window-set-primary-extent 1.0"
 "Mod+M" = { action = "window-toggle-maximize-to-edges", repeat = false }
 "Mod+F" = { action = "window-toggle-fullscreen", repeat = false }
 "Mod+Ctrl+F" = { action = "window-toggle-maximize", repeat = false }
@@ -262,7 +258,7 @@ size = 24
 "Mod+equal" = "window-cycle-primary-extent"
 "Mod+minus" = "window-cycle-primary-extent-back"
 "Mod+Comma" = "window-consume-left"
-"Mod+Period" = { action = "spawn:noctalia msg panel-toggle launcher", repeat = false }
+"Mod+Period" = { action = "spawn noctalia msg panel-toggle launcher", repeat = false }
 "Mod+Ctrl+Comma" = "window-consume-from-left"
 "Mod+Ctrl+Period" = "window-consume-from-right"
 # Needs layout.mode = "dwindle".
@@ -275,29 +271,29 @@ size = 24
 "Mod+O" = { action = "overview-toggle", repeat = false }
 
 # Workspaces
-"Mod+1" = "workspace-switch:1"
-"Mod+2" = "workspace-switch:2"
-"Mod+3" = "workspace-switch:3"
-"Mod+4" = "workspace-switch:4"
-"Mod+5" = "workspace-switch:5"
-"Mod+6" = "workspace-switch:6"
-"Mod+7" = "workspace-switch:7"
-"Mod+8" = "workspace-switch:8"
-"Mod+9" = "workspace-switch:9"
-"Mod+Shift+1" = "window-move-to-workspace:1"
-"Mod+Shift+2" = "window-move-to-workspace:2"
-"Mod+Shift+3" = "window-move-to-workspace:3"
-"Mod+Shift+4" = "window-move-to-workspace:4"
-"Mod+Shift+5" = "window-move-to-workspace:5"
-"Mod+Shift+6" = "window-move-to-workspace:6"
-"Mod+Shift+7" = "window-move-to-workspace:7"
-"Mod+Shift+8" = "window-move-to-workspace:8"
-"Mod+Shift+9" = "window-move-to-workspace:9"
+"Mod+1" = "workspace-switch 1"
+"Mod+2" = "workspace-switch 2"
+"Mod+3" = "workspace-switch 3"
+"Mod+4" = "workspace-switch 4"
+"Mod+5" = "workspace-switch 5"
+"Mod+6" = "workspace-switch 6"
+"Mod+7" = "workspace-switch 7"
+"Mod+8" = "workspace-switch 8"
+"Mod+9" = "workspace-switch 9"
+"Mod+Shift+1" = "window-move-to-workspace 1"
+"Mod+Shift+2" = "window-move-to-workspace 2"
+"Mod+Shift+3" = "window-move-to-workspace 3"
+"Mod+Shift+4" = "window-move-to-workspace 4"
+"Mod+Shift+5" = "window-move-to-workspace 5"
+"Mod+Shift+6" = "window-move-to-workspace 6"
+"Mod+Shift+7" = "window-move-to-workspace 7"
+"Mod+Shift+8" = "window-move-to-workspace 8"
+"Mod+Shift+9" = "window-move-to-workspace 9"
 
 # Scratchpad
 "Mod+Shift+Space" = { action = "window-move-to-scratchpad", repeat = false }
 "Mod+Ctrl+Space" = { action = "window-restore-from-scratchpad", repeat = false }
-"Mod+Space" = { action = "spawn:noctalia msg panel-toggle launcher", repeat = false }
+"Mod+Space" = { action = "spawn noctalia msg panel-toggle launcher", repeat = false }
 "Mod+Tab" = { action = "overview-open", submap = "alttab", repeat = false }
 "Mod+Shift+Tab" = { action = "overview-open", submap = "alttab", repeat = false }
 "submap[alttab],Tab" = { action = "window-focus-right", repeat = true }

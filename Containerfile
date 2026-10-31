@@ -46,37 +46,27 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
         dnf -y config-manager setopt "${repo}.enabled=1"; \
     done
 
-# Compositor + shell
+# Compositor
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y install \
       umbriel-nightly xdg-desktop-portal-umbriel-nightly noctalia
 
-# Portals
-RUN --mount=type=cache,dst=/var/cache/libdnf5 \
-    dnf -y install \
-      xdg-desktop-portal xdg-desktop-portal-gtk
-
-# X11 (optional: legacy X11 apps under Umbriel)
-RUN --mount=type=cache,dst=/var/cache/libdnf5 \
-    dnf -y install \
-      xorg-x11-server-Xwayland
-
 # Terminals
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y install \
-      starship ghostty kitty
+      starship ghostty
 
-# Core / system
+# Core
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y install \
       os-prober polkit gdm just make pnpm gcc git uv go-task
 
-# Shell / CLI tools
+# CLI tools
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y install \
-      fastfetch zoxide micro procs cava yazi bat duf eza fzf zsh
+      fastfetch zoxide micro cava yazi bat duf eza fzf zsh
 
-# Hardware / media control
+# Hardware control
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y install \
       brightnessctl i2c-tools playerctl
