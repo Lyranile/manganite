@@ -16,7 +16,7 @@
 files = []
 
 [include.optional]
-files = []
+files = ["noctalia.toml"]
 
 # ==============================================================================
 # General
@@ -24,24 +24,19 @@ files = []
 # https://docs.noctalia.dev/umbriel/configuration/#general
 #
 [general]
-autostart = ["noctalia"]
+autostart = ["noctalia --daemon"]
 mod_key = "Super"
 xwayland = true
-xwayland_native_resolution = false
+# Sharp X11 apps and games on scaled outputs; they see physical resolutions.
+xwayland_native_resolution = true
+# Umbriel announces the X11 interface scale and cursor theme through XSETTINGS.
+# Turn this off to run your own manager, such as xsettingsd.
 xwayland_xsettings = true
 show_cheatsheet = true
 focus_on_activate = true
+# Modal dialogs hang on their parent window and follow it. Turn this off to keep them ordinary windows.
 attach_modal_dialogs = true
 honor_restored_maximize = false
-# autostart = ["noctalia"]
-# xwayland = false
-# Sharp X11 apps and games on scaled outputs; they see physical resolutions.
-# xwayland_native_resolution = true
-# Umbriel announces the X11 interface scale and cursor theme through XSETTINGS.
-# Turn this off to run your own manager, such as xsettingsd.
-# xwayland_xsettings = false
-# Modal dialogs hang on their parent window and follow it. Turn this off to keep them ordinary windows.
-# attach_modal_dialogs = false
 
 [environment]
 WLR_RENDERER = "gles2"
@@ -465,30 +460,3 @@ action = "overview-open"
 # Shade over a window while a modal dialog is attached to it.
 # [animation.dialogs]
 # dim = 0.3
-
-# --- Merged from noctalia.toml (Umbriel-side colors/scratchpad rules) ---
-[colors]
-background = "#313244FF"
-text_primary = "#cdd6f4FF"
-text_muted = "#a3b4ebFF"
-accent_primary = "#cba6f7FF"
-accent_secondary = "#fab387FF"
-warning = "#94e2d5FF"
-error = "#f38ba8FF"
-insert_hint = "#94e2d580"
-backdrop = "#313244FF"
-
-[colors.border]
-focused = "#cba6f7FF"
-unfocused = "#313244FF"
-outer = "#1e1e2eFF"
-
-[colors.overview]
-background_tint = "#1e1e2e88"
-badge = "#cba6f7FF"
-workspace_background = "#1e1e2eFF"
-
-[[window_rule]]
-match.is_scratchpad = true
-border_color_focused = "#94e2d5FF"
-border_color_unfocused = "#23a08bFF"

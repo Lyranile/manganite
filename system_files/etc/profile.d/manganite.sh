@@ -1,8 +1,8 @@
-# Tokens
+# --- managed env/aliases (from former .profile) ---
+SHELL=$(cat /proc/$$/comm)
+
 export XDG_CONFIG_HOME="$HOME/.config"
 export HOMEBREW_NO_ENV_HINTS=1
-
-SHELL=$(cat /proc/$$/comm)
 
 # Starship
 if [ "$(command -v starship)" ]; then

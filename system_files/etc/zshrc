@@ -1,3 +1,5 @@
+export HOMEBREW_NO_ENV_HINTS=1
+
 # Zinit
 ZINIT_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
 source "$ZINIT_HOME/zinit.zsh"
@@ -113,5 +115,7 @@ rm -f ~/.zcompdump
 compinit
 
 # Profile Loading
-source "$HOME/.profile"
 fpath+=~/.zfunc; autoload -Uz compinit; compinit
+
+# Source managed env/aliases
+[ -f /etc/profile.d/manganite.sh ] && source /etc/profile.d/manganite.sh

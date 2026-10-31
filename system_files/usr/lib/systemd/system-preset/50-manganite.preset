@@ -1,1 +1,2 @@
+enable gdm.service
 enable flatpak-nuke-fedora.service
