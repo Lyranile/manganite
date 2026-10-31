@@ -69,6 +69,25 @@ ELECTRON_OZONE_PLATFORM_HINT = "auto"
 # Outputs are machine-specific. Run `umbriel outputs` to find names and modes.
 # https://docs.noctalia.dev/umbriel/outputs/
 #
+[output.DP-2]
+mode = "2560x1440@120"
+position = [0, 0]
+transform = "90"
+scale = 1.5
+vrr = "disabled"
+hdr = "auto"
+focus_at_startup = true
+workspace_axis = "horizontal"
+
+[output.DP-3]
+mode = "3440x1440@144"
+position = [960, 0]
+# transform = "90"
+scale = 1.5
+vrr = "disabled"
+hdr = "auto"
+# sdr_transfer = "gamma22" # Or "srgb" for piecewise SDR decoding in HDR.
+
 # ==============================================================================
 # Appearance
 # Blur uses a smaller radius than the built-in default.
