@@ -106,8 +106,9 @@ build $target_image=image_name $tag=default_tag:
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_NAME={{ base_image_name }}")
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_TAG={{ base_image_tag }}")
     BUILD_ARGS+=("--build-arg" "IMAGE_NAME={{ image_name }}")
-    # NVIDIA is enabled for any variant other than "none" (e.g. "proprietary")
-    if [[ "{{ nvidia_variant }}" != "none" ]]; then
+    if [[ "{{ nvidia_variant }}" == "none" ]]; then
+        BUILD_ARGS+=("--build-arg" "NVIDIA=false")
+    else
         BUILD_ARGS+=("--build-arg" "NVIDIA=true")
     fi
     if [[ -z "$(git status -s)" ]]; then

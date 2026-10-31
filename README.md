@@ -3,7 +3,7 @@
 [![Build](https://github.com/Lyranile/manganite/actions/workflows/build.yml/badge.svg)](https://github.com/Lyranile/manganite/actions/workflows/build.yml)
 [![Lint](https://github.com/Lyranile/manganite/actions/workflows/lint.yml/badge.svg)](https://github.com/Lyranile/manganite/actions/workflows/lint.yml)
 
-A minimal [bootc](https://github.com/bootc-dev/bootc) image that starts from the Universal Blue [`base-main`](https://github.com/orgs/ublue-os/packages) image (a minimal, desktop-free Fedora base) and layers the [Umbriel](https://noctalia.dev/umbriel) compositor (nightly, from Terra) and the [Noctalia](https://noctalia.dev/) shell on top.
+A minimal [bootc](https://github.com/bootc-dev/bootc) image that starts from the Universal Blue [`base-nvidia`](https://github.com/orgs/ublue-os/packages) image (a minimal, desktop-free Fedora base with NVIDIA drivers pre-baked) and layers the [Umbriel](https://noctalia.dev/umbriel) compositor (nightly, from Terra) and the [Noctalia](https://noctalia.dev/) shell on top.
 
 # Community
 
