@@ -117,5 +117,5 @@ compinit
 # Profile Loading
 fpath+=~/.zfunc; autoload -Uz compinit; compinit
 
-# Source managed env/aliases
+# Source managed
 [ -f /etc/profile.d/manganite.sh ] && source /etc/profile.d/manganite.sh
