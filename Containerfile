@@ -155,7 +155,7 @@ RUN if [ -f /etc/default/grub ]; then \
         grep -q '^GRUB_DISABLE_OS_PROBER=' /etc/default/grub || echo 'GRUB_DISABLE_OS_PROBER=false' >> /etc/default/grub; \
     fi
 
-# GDM auto-login (single-user image). Adjust the username in /etc/gdm/custom.conf if your account differs.
+# GDM auto login
 RUN mkdir -p /etc/gdm && \
     printf '%s\n' '[daemon]' 'AutomaticLoginEnable=true' 'AutomaticLogin=user' 'DefaultSession=umbriel' > /etc/gdm/custom.conf
 

@@ -1,4 +1,3 @@
-# --- managed env/aliases (from former .profile) ---
 SHELL=$(cat /proc/$$/comm)
 
 export XDG_CONFIG_HOME="$HOME/.config"
