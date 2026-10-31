@@ -10,7 +10,7 @@
 ARG BASE_IMAGE_NAME="base-main"
 ARG BASE_IMAGE_TAG="44"
 ARG BASE_IMAGE="ghcr.io/ublue-os/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}"
-ARG NVIDIA="false"
+ARG NVIDIA="true"
 
 # Repositories to enable
 ARG ENABLE_REPOS="terra"
@@ -65,7 +65,6 @@ ARG ENABLE_REPOS
 ARG INSTALL_PACKAGES
 ARG IMAGE_NAME
 
-
 # Copy system files to the root filesystem
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
@@ -91,7 +90,6 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
 # Enable DMS and install minimal dependencies
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y copr enable duxlabs/dms && \
-    dnf -y copr enable duxlabs/dux && \
     dnf -y install dms --setopt=install_weak_deps=False
 
 # Disable COPRs so they do not stay enabled on the final system
@@ -129,6 +127,12 @@ RUN --mount=type=bind,from=akmods,source=/kernel-rpms,target=/tmp/kernel-rpms \
         AKMODNV_PATH=/tmp/akmods-nv-rpms /tmp/akmods-nv-rpms/ublue-os/nvidia-install.sh; \
     fi
 
+# Rebuild initramfs for the (possibly replaced) kernel (bazzite/ublue-style)
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    KVER="$(rpm -q --queryformat='%{evr}.%{arch}' kernel-core)" && \
+    /usr/bin/dracut --no-hostonly --kver "$KVER" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$KVER/initramfs.img" && \
+    chmod 0600 "/usr/lib/modules/$KVER/initramfs.img"
+
 # Configure Flatpak
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf remove -y fedora-flathub-remote 2>/dev/null || true && \
@@ -162,3 +166,5 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
 
 # Lint container files
 RUN bootc container lint
+
+CMD ["/sbin/init"]
