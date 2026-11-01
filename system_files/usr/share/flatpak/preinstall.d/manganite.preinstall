@@ -1,4 +1,32 @@
+[Flatpak Preinstall com.github.PintaProject.Pinta]
+Branch=stable
+IsRuntime=false
+
 [Flatpak Preinstall com.github.tchx84.Flatseal]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall dev.geopjr.Collision]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall dev.zed.Zed]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall io.github.flattool.Warehouse]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall io.github.kolunmi.Bazaar]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall io.gitlab.adhami3310.Converter]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall io.gitlab.adhami3310.Impression]
 Branch=stable
 IsRuntime=false
 
@@ -38,10 +66,6 @@ IsRuntime=false
 Branch=stable
 IsRuntime=false
 
-[Flatpak Preinstall org.gnome.gitlab.ilhooq.Bookup]
-Branch=stable
-IsRuntime=false
-
 [Flatpak Preinstall org.gnome.Logs]
 Branch=stable
 IsRuntime=false
@@ -59,5 +83,13 @@ Branch=stable
 IsRuntime=false
 
 [Flatpak Preinstall org.gnome.Snapshot]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.libreoffice.LibreOffice]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall re.sonny.Junction]
 Branch=stable
 IsRuntime=false

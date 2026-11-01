@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 set -eoux pipefail
 
@@ -9,11 +9,11 @@ mkdir -p /var/roothome
 echo "::endgroup::"
 
 if ! rpm -q dnf5 >/dev/null; then
-  rpm-ostree install dnf5 dnf5-plugins
+	rpm-ostree install dnf5 dnf5-plugins
 fi
 
 for repo in ${ENABLE_REPOS}; do
-  dnf5 config-manager setopt "${repo}.enabled=1"
+	dnf5 config-manager setopt "${repo}.enabled=1"
 done
 
 /ctx/build_files/base/01-nvidia.sh

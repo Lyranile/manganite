@@ -5,13 +5,14 @@ echo "::group:: ===$(basename "$0")==="
 set -eoux pipefail
 
 dnf5 remove -y fedora-flathub-remote 2>/dev/null || true
+dnf5 remove -y firefox htop 2>/dev/null || true
 mkdir -p /etc/flatpak/remotes.d/
 curl --retry 3 -Lo /etc/flatpak/remotes.d/flathub.flatpakrepo https://dl.flathub.org/repo/flathub.flatpakrepo
 mv -f /usr/lib/systemd/system/flatpak-add-flathub-repos.service /usr/lib/systemd/system/flatpak-add-fedora-repos.service 2>/dev/null || true
 
 systemctl set-default graphical.target &&
 	systemctl disable getty@tty1 2>/dev/null || true
-systemctl enable rpm-ostreed-automatic.timer flatpak-system-update.timer &&
+systemctl enable rpm-ostreed-automatic.timer flatpak-system-update.timer flatpak-preinstall.service &&
 	systemctl --global enable flatpak-user-update.timer &&
 	systemctl enable flatpak-nuke-fedora.service
 

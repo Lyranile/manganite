@@ -1,3 +1,1 @@
-[[customizations.filesystem]]
-mountpoint = "/"
-minsize = "20 GiB"
+# sizing is controlled by the target disk or DISK_SIZE at run time instead.
