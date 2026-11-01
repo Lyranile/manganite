@@ -5,7 +5,7 @@ echo "::group:: ===$(basename "$0")==="
 set -eoux pipefail
 
 dnf5 remove -y fedora-flathub-remote 2>/dev/null || true
-dnf5 remove -y firefox 2>/dev/null || true
+dnf5 remove -y firefox htop 2>/dev/null || true
 mkdir -p /etc/flatpak/remotes.d/
 curl --retry 3 -Lo /etc/flatpak/remotes.d/flathub.flatpakrepo https://dl.flathub.org/repo/flathub.flatpakrepo
 mv -f /usr/lib/systemd/system/flatpak-add-flathub-repos.service /usr/lib/systemd/system/flatpak-add-fedora-repos.service 2>/dev/null || true
