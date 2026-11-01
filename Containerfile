@@ -49,7 +49,7 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
 # Compositor
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y install \
-      umbriel-nightly xdg-desktop-portal-umbriel-nightly noctalia noctalia-greeter
+      umbriel-nightly xdg-desktop-portal-umbriel-nightly noctalia
 
 # Terminals
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
@@ -113,9 +113,11 @@ RUN --mount=type=bind,from=akmods,source=/kernel-rpms,target=/tmp/kernel-rpms \
 
 # Rebuild initramfs for the (possibly replaced) kernel (bazzite/ublue-style)
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    if [ -L /root ]; then rm -f /root && mkdir /root; fi && \
     KVER="$(rpm -q --queryformat='%{evr}.%{arch}' kernel-core)" && \
     /usr/bin/dracut --no-hostonly --kver "$KVER" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$KVER/initramfs.img" && \
-    chmod 0600 "/usr/lib/modules/$KVER/initramfs.img"
+    chmod 0600 "/usr/lib/modules/$KVER/initramfs.img" && \
+    rm -rf /root && ln -s var/roothome /root
 
 # Configure Flatpak
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
@@ -148,8 +150,7 @@ RUN if [ -f /etc/default/grub ]; then \
 # Default user for login
 RUN id user >/dev/null 2>&1 || useradd -m -s /usr/bin/zsh -G wheel user
 
-# Greeter user for greeter
-RUN id greeter >/dev/null 2>&1 || useradd -r -s /usr/sbin/nologin greeter
+
 
 # Cleanup temporary files
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
