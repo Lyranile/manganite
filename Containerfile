@@ -49,7 +49,7 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
 # Compositor
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y install \
-      umbriel-nightly xdg-desktop-portal-umbriel-nightly noctalia
+      umbriel-nightly xdg-desktop-portal-umbriel-nightly noctalia noctalia-greeter
 
 # Terminals
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
@@ -145,8 +145,11 @@ RUN if [ -f /etc/default/grub ]; then \
         grep -q '^GRUB_DISABLE_OS_PROBER=' /etc/default/grub || echo 'GRUB_DISABLE_OS_PROBER=false' >> /etc/default/grub; \
     fi
 
-# Default user for auto-login / testing
+# Default user for login
 RUN id user >/dev/null 2>&1 || useradd -m -s /usr/bin/zsh -G wheel user
+
+# Greeter user for greeter
+RUN id greeter >/dev/null 2>&1 || useradd -r -s /usr/sbin/nologin greeter
 
 # Cleanup temporary files
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
