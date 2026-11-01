@@ -23,18 +23,20 @@ if [ "${NVIDIA:-true}" = "true" ]; then
         "/tmp/kernel-rpms/kernel-modules-extra-${KERNEL_VERSION}.rpm"
     )
 
-    cd /usr/lib/kernel/install.d \
-        && mv 05-rpmostree.install 05-rpmostree.install.bak \
-        && mv 50-dracut.install 50-dracut.install.bak \
-        && printf '%s\n' '#!/bin/sh' 'exit 0' > 05-rpmostree.install \
-        && printf '%s\n' '#!/bin/sh' 'exit 0' > 50-dracut.install \
-        && chmod +x 05-rpmostree.install 50-dracut.install
+    cd /usr/lib/kernel/install.d
+    mv 05-rpmostree.install 05-rpmostree.install.bak
+    mv 50-dracut.install 50-dracut.install.bak
+    printf '%s\n' '#!/bin/sh' 'exit 0' > 05-rpmostree.install
+    printf '%s\n' '#!/bin/sh' 'exit 0' > 50-dracut.install
+    chmod +x 05-rpmostree.install 50-dracut.install
 
     dnf5 -y install "${KERNEL_RPMS[@]}"
 
-    mv -f 05-rpmostree.install.bak 05-rpmostree.install \
-        && mv -f 50-dracut.install.bak 50-dracut.install
+    mv -f 05-rpmostree.install.bak 05-rpmostree.install
+    mv -f 50-dracut.install.bak 50-dracut.install
     cd -
+
+    find /boot -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null || true
 
     dnf5 versionlock add kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra
 fi
