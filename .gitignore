@@ -1,11 +1,11 @@
+!image-template.env
 # Archives
 # Build manifests
 # Build outputs
-# Cache
 # Config & environment
+# Dev container
 # Image artifacts
 # Logs & temp
-# OCI images
 # SBOM & signing
 *.env
 *.img
@@ -24,14 +24,12 @@
 .cache/
 .podman/
 _build*
-aurora*.oci
 changelog.md
 cosign.key
 devcontainer
-manifest.json
-output
-result
-result-*
+manifest*.json
+output/
+result*
 sbom_out
 temp/
 tmp/
