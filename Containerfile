@@ -25,12 +25,7 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=bind,from=akmods,source=/kernel-rpms,target=/tmp/kernel-rpms \
     --mount=type=bind,from=akmods,source=/rpms/ublue-os,target=/tmp/akmods-rpms \
     --mount=type=bind,from=akmods-nvidia,source=/rpms,target=/tmp/akmods-nv-rpms \
-    /ctx/build_files/install.sh && \
-    if [ "${NVIDIA}" = "true" ]; then \
-        AKMODNV_PATH=/tmp/akmods-nv-rpms /tmp/akmods-nv-rpms/ublue-os/nvidia-install.sh; \
-    fi && \
-    /ctx/build_files/initramfs.sh && \
-    /ctx/build_files/post-install.sh
+    /ctx/build_files/build.sh
 
 # Lint container files
 RUN ["bootc", "container", "lint"]
