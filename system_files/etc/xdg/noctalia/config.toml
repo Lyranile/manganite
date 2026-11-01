@@ -17,3 +17,7 @@ builtin = "Tokyo-Night"
 [wallpaper]
 default.path = "/usr/share/icons/hicolor/scalable/apps/background.svg"
 fill_mode = "crop"
+
+[shell]
+time_format = "{:%H:%M:%S}"
+date_format = "%d/%m/%y"
