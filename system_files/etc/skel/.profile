@@ -86,3 +86,10 @@ if [ "$(command -v uv)" ]; then
     eval '$(uv generate-shell-completion ${SHELL})'
     eval '$(uvx --generate-shell-completion $SHELL)'
 fi
+
+# Apply GTK icon and cursor themes (gsettings) for Wayland sessions
+if command -v gsettings >/dev/null 2>&1; then
+    gsettings set org.gnome.desktop.interface icon-theme 'Papirus' 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Ice' 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface cursor-size 24 2>/dev/null || true
+fi

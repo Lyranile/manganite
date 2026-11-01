@@ -20,10 +20,9 @@ done
 /ctx/build_files/base/02-services.sh
 /ctx/build_files/base/03-packages.sh
 /ctx/build_files/base/04-brew.sh
-/ctx/build_files/base/05-flatpaks.sh
-/ctx/build_files/base/06-users.sh
-/ctx/build_files/base/07-greeter.sh
-/ctx/build_files/base/08-cleanup.sh
+/ctx/build_files/base/05-users.sh
+/ctx/build_files/base/06-greeter.sh
+/ctx/build_files/base/07-cleanup.sh
 /ctx/build_files/base/19-initramfs.sh
 /ctx/build_files/base/20-tests.sh
 
