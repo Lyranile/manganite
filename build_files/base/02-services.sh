@@ -13,7 +13,7 @@ mv -f /usr/lib/systemd/system/flatpak-add-flathub-repos.service /usr/lib/systemd
 systemctl set-default graphical.target &&
 	systemctl disable getty@tty1 2>/dev/null || true
 systemctl enable rpm-ostreed-automatic.timer flatpak-system-update.timer flatpak-preinstall.service &&
-	systemctl --global enable flatpak-user-update.timer &&
+	systemctl --global enable flatpak-user-update.timer bazaar.service &&
 	systemctl enable flatpak-nuke-fedora.service
 
 cp /usr/share/ublue-os/update-services/etc/rpm-ostreed.conf /etc/rpm-ostreed.conf 2>/dev/null || true &&

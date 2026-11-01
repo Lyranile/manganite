@@ -1,4 +1,4 @@
-exclude-newer = "7 days"
+exclude-newer = "2 days"
 no-build = true
 no-build-package = []
 no-binary = false
@@ -10,4 +10,3 @@ system-certs = true
 
 [audit]
 ignore = []
-ignore-deps = []

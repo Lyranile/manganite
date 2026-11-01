@@ -1,5 +1,5 @@
 engineStrict: true
 ignoreScripts: true
-minimumReleaseAge: 4320
+minimumReleaseAge: 2880
 saveExact: true
 verifyStoreIntegrity: true

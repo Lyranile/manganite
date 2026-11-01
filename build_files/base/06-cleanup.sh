@@ -11,6 +11,8 @@ rm -rf /run/* /run/.[!.]* /tmp/* /tmp/.[!.]* /var/tmp/* /var/tmp/.[!.]* 2>/dev/n
 
 dnf5 clean all || true
 
+glib-compile-schemas /usr/share/glib-2.0/schemas/ 2>/dev/null || true
+
 rm -rf /run/* /run/.[!.]* /tmp/* /tmp/.[!.]* /var/tmp/* /var/tmp/.[!.]* 2>/dev/null || true
 
 echo "::endgroup::"

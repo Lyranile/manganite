@@ -97,12 +97,12 @@ hdr = "auto"
 radius = 3
 
 # Optional title bar with modifier-free dragging and floating frame resizing.
-# [appearance.title_bar]
-# mode = "on" # Follow client decoration preferences.
+[appearance.title_bar]
+mode = "forced"  # Always show title bars with buttons.
 # Use "forced" to always show bars, or "off" to hide them. Window rules can override this.
-# height = 28
-# font = "sans 10"
-# button_position = "right" # or "left"
+height = 28
+font = "sans 10"
+button_position = "right"  # or "left"
 
 # Choose the background color shown if the lock screen takes too long to appear.
 # [colors]
@@ -178,7 +178,6 @@ accel_profile = "flat"
 # Syntax: https://docs.noctalia.dev/umbriel/keybinds/
 # Actions: https://docs.noctalia.dev/umbriel/actions/
 [keybinds]
-
 # Applications and session
 "Mod+Return" = { action = "spawn ghostty", repeat = false }
 "Mod+T" = { action = "spawn ghostty", repeat = false }
