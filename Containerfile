@@ -1,4 +1,4 @@
-ARG IMAGE_NAME="${IMAGE_NAME:-manganite}"
+ARG IMAGE_NAME="manganite"
 ARG BASE_IMAGE_NAME="base-main"
 ARG BASE_IMAGE_TAG="44"
 ARG BASE_IMAGE="ghcr.io/ublue-os/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}"
@@ -14,9 +14,9 @@ FROM ghcr.io/ublue-os/akmods-nvidia-open:main-${BASE_IMAGE_TAG} AS akmods-nvidia
 
 FROM ${BASE_IMAGE}
 
-ARG IMAGE_NAME="${IMAGE_NAME:-manganite}"
-ARG ENABLE_REPOS="terra"
-ARG NVIDIA="true"
+ARG IMAGE_NAME
+ARG ENABLE_REPOS
+ARG NVIDIA
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
@@ -27,7 +27,7 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=bind,from=akmods-nvidia,source=/rpms,target=/tmp/akmods-nv-rpms \
     /ctx/build_files/build.sh
 
-# Lint container files
-RUN ["bootc", "container", "lint"]
-
 CMD ["/sbin/init"]
+
+RUN --network=none \
+    bootc container lint --fatal-warnings --no-truncate
