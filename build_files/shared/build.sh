@@ -21,8 +21,7 @@ done
 /ctx/build_files/base/03-packages.sh
 /ctx/build_files/base/04-users.sh
 /ctx/build_files/base/05-greeter.sh
-/ctx/build_files/base/06-flatpaks.sh
-/ctx/build_files/base/07-cleanup.sh
+/ctx/build_files/base/06-cleanup.sh
 /ctx/build_files/base/19-initramfs.sh
 /ctx/build_files/base/20-tests.sh
 

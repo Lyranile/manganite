@@ -1,9 +1,15 @@
 [customizations.installer.kickstart]
-contents = """
+contents = '''
 %post
+# Ensure zsh is the default shell for all installer-created users (Anaconda
+# may not honor /etc/default/useradd SHELL, so set it explicitly here).
+for u in $(awk -F: '$3 >= 1000 {print $1}' /etc/passwd); do
+  sed -i "s|^\($u:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:\).*|\1/usr/bin/zsh|" /etc/passwd
+done
+sed -i "s|^\(root:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:\).*|\1/usr/bin/zsh|" /etc/passwd
 bootc switch --mutate-in-place --transport registry ghcr.io/lyranile/manganite:latest
 %end
-"""
+'''
 
 [customizations.installer.modules]
 enable = [
@@ -19,9 +25,6 @@ enable = [
 disable = ["org.fedoraproject.Anaconda.Modules.Subscription"]
 
 [customizations.iso]
-volume_id = "MANGANITE"
+volume_id = "Manganite"
 application_id = "manganite"
 publisher = "lyranile"
-
-[customizations.kernel]
-append = "inst.dark"
