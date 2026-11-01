@@ -19,15 +19,15 @@ ARG ENABLE_REPOS
 ARG NVIDIA
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache \
-    --mount=type=cache,dst=/var/log \
-    --mount=type=tmpfs,dst=/tmp \
-    --mount=type=bind,from=akmods,source=/kernel-rpms,target=/tmp/kernel-rpms \
-    --mount=type=bind,from=akmods,source=/rpms/ublue-os,target=/tmp/akmods-rpms \
-    --mount=type=bind,from=akmods-nvidia,source=/rpms,target=/tmp/akmods-nv-rpms \
-    /ctx/build_files/build.sh
+  --mount=type=cache,dst=/var/cache \
+  --mount=type=cache,dst=/var/log \
+  --mount=type=tmpfs,dst=/tmp \
+  --mount=type=bind,from=akmods,source=/kernel-rpms,target=/tmp/kernel-rpms \
+  --mount=type=bind,from=akmods,source=/rpms/ublue-os,target=/tmp/akmods-rpms \
+  --mount=type=bind,from=akmods-nvidia,source=/rpms,target=/tmp/akmods-nv-rpms \
+  /ctx/build_files/shared/build.sh
 
 CMD ["/sbin/init"]
 
 RUN --network=none \
-    bootc container lint --fatal-warnings --no-truncate
+  bootc container lint --fatal-warnings --no-truncate

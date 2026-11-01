@@ -1,0 +1,63 @@
+[Flatpak Preinstall com.github.tchx84.Flatseal]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall net.nokyan.Resources]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall net.waterfox.waterfox]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.freedesktop.Bustle]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.gnome.baobab]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.gnome.Calculator]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.gnome.Characters]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.gnome.clocks]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.gnome.Decibels]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.gnome.FileRoller]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.gnome.gitlab.ilhooq.Bookup]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.gnome.Logs]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.gnome.Loupe]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.gnome.Papers]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.gnome.Showtime]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.gnome.Snapshot]
+Branch=stable
+IsRuntime=false
