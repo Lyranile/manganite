@@ -7,7 +7,7 @@ set -eoux pipefail
 dnf5 -y install \
 	bat \
 	bibata-cursor-theme \
-	btop \
+	bottom \
 	brightnessctl \
 	cava \
 	duf \
@@ -26,7 +26,6 @@ dnf5 -y install \
 	micro \
 	noctalia \
 	noctalia-greeter \
-	nvtop \
 	os-prober \
 	papirus-icon-theme \
 	playerctl \
@@ -47,5 +46,9 @@ dnf5 -y install \
 ZINIT_HOME="/etc/skel/.local/share/zinit/zinit.git"
 mkdir -p "$(dirname "$ZINIT_HOME")"
 [ ! -d "$ZINIT_HOME/.git" ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+
+# Generate starship tokyo-night preset config (once, at build time)
+mkdir -p /etc/skel/.config
+starship preset tokyo-night -o /etc/skel/.config/starship.toml 2>/dev/null || true
 
 echo "::endgroup::"
