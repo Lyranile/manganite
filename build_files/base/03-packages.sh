@@ -49,6 +49,6 @@ mkdir -p "$(dirname "$ZINIT_HOME")"
 
 # Generate starship tokyo-night preset config (once, at build time)
 mkdir -p /etc/skel/.config
-starship preset tokyo-night -o /etc/skel/.config/starship.toml 2>/dev/null || true
+starship preset tokyo-night -o /etc/skel/.config/starship.toml
 
 echo "::endgroup::"
