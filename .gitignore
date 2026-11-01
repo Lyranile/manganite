@@ -1,12 +1,4 @@
 !image-template.env
-# Archives
-# Build manifests
-# Build outputs
-# Config & environment
-# Dev container
-# Image artifacts
-# Logs & temp
-# SBOM & signing
 *.env
 *.img
 *.iso
