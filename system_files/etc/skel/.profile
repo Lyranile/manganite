@@ -18,11 +18,10 @@ fi
 
 # List Aliases
 if [ "$(command -v eza)" ]; then
-	FLAGS="--git --icons=auto --classify --group-directories-first --time-style=long-iso --color-scale"
-	alias ls="eza $FLAGS"
-	alias l="eza $FLAGS --git-ignore"
-	alias ll="eza $FLAGS --all --header --long"
-	alias tree="eza $FLAGS --tree"
+	alias ls='eza --git --icons=auto --classify --group-directories-first --time-style=long-iso --color-scale'
+	alias l='eza --git --icons=auto --classify --group-directories-first --time-style=long-iso --color-scale --git-ignore'
+	alias ll='eza --git --icons=auto --classify --group-directories-first --time-style=long-iso --color-scale --all --header --long'
+	alias tree='eza --git --icons=auto --classify --group-directories-first --time-style=long-iso --color-scale --tree'
 fi
 
 # Zoxide Aliases
@@ -84,11 +83,4 @@ fi
 if [ "$(command -v uv)" ]; then
 	eval '$(uv generate-shell-completion ${SHELL})'
 	eval '$(uvx --generate-shell-completion $SHELL)'
-fi
-
-# GTK themes
-if command -v gsettings >/dev/null 2>&1; then
-	gsettings set org.gnome.desktop.interface icon-theme 'Papirus' 2>/dev/null || true
-	gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Ice' 2>/dev/null || true
-	gsettings set org.gnome.desktop.interface cursor-size 24 2>/dev/null || true
 fi
