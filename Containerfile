@@ -150,8 +150,6 @@ RUN if [ -f /etc/default/grub ]; then \
 # Default user for login
 RUN id user >/dev/null 2>&1 || useradd -m -s /usr/bin/zsh -G wheel user
 
-
-
 # Cleanup temporary files
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y clean all && \
