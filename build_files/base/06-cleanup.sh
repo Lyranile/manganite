@@ -5,7 +5,7 @@ echo "::group:: ===$(basename "$0")==="
 set -eoux pipefail
 
 rm -rf /var/lib/dnf /var/lib/rpm-state /var/lib/xkb \
-	/var/lib/power-profiles-daemon /var/lib/greetd || true
+	/var/lib/power-profiles-daemon /var/lib/greetd /var/roothome/.cache || true
 
 rm -rf /run/* /run/.[!.]* /tmp/* /tmp/.[!.]* /var/tmp/* /var/tmp/.[!.]* 2>/dev/null || true
 

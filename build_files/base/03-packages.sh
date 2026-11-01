@@ -55,5 +55,6 @@ mkdir -p "$(dirname "$ZINIT_HOME")"
 
 mkdir -p /etc/skel/.config
 starship preset tokyo-night -o /etc/skel/.config/starship.toml
+rm -rf /var/roothome/.cache
 
 echo "::endgroup::"
