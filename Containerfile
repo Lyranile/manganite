@@ -1,19 +1,16 @@
-# Manganite bootc image - image-template pattern
+# Manganite bootc image
 #
-# Non-NVIDIA (default):
+# NVIDIA (prebuilt ublue akmods; same flow as ublue-os/main) is enabled by default
+# because image-template.env sets NVIDIA_VARIANT="proprietary". To build the plain
+# base image instead, pass --build-arg NVIDIA=false.
+#
 #   podman build -f Containerfile -t manganite .
-#
-# NVIDIA (prebuilt ublue akmods; same flow as ublue-os/main):
-#   podman build --build-arg NVIDIA=true -f Containerfile -t manganite .
+#   podman build --build-arg NVIDIA=false -f Containerfile -t manganite .
 
-# Options
+# Base image specific arguments
 ARG BASE_IMAGE_NAME="base-main"
 ARG BASE_IMAGE_TAG="44"
 ARG BASE_IMAGE="ghcr.io/ublue-os/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}"
-ARG NVIDIA="true"
-
-# Repositories to enable
-ARG ENABLE_REPOS="terra"
 
 # Allow build scripts to be referenced without being copied into the final image
 FROM scratch AS ctx
@@ -24,11 +21,12 @@ FROM ghcr.io/ublue-os/akmods-nvidia-open:main-${BASE_IMAGE_TAG} AS akmods-nvidia
 
 FROM ${BASE_IMAGE}
 
-ARG NVIDIA
-ARG ENABLE_REPOS
-ARG IMAGE_NAME
+# Destkop image specific arguments
+ARG NVIDIA="true"
+ARG ENABLE_REPOS="terra"
+ARG IMAGE_NAME="manganite"
 
-# Copy system files to the root filesystem
+# Copy system files to the root  filesystem
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/log \
@@ -81,7 +79,7 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y install \
       android-tools
 
-# Install prebuilt open NVIDIA akmods.
+# Install NVIDIA prebuilt open akmods
 RUN --mount=type=bind,from=akmods,source=/kernel-rpms,target=/tmp/kernel-rpms \
     --mount=type=bind,from=akmods,source=/rpms/ublue-os,target=/tmp/akmods-rpms \
     --mount=type=bind,from=akmods-nvidia,source=/rpms,target=/tmp/akmods-nv-rpms \
