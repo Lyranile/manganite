@@ -14,9 +14,11 @@ dnf5 -y install \
 	eza \
 	fastfetch \
 	fd-find \
+	file-roller-nautilus \
 	fzf \
 	gcc \
 	ghostty \
+	ghostty-nautilus \
 	git \
 	go-task \
 	greetd \
@@ -24,9 +26,12 @@ dnf5 -y install \
 	just \
 	make \
 	micro \
+	nautilus \
+	nautilus-extensions \
 	noctalia \
 	noctalia-greeter \
 	os-prober \
+	papers-nautilus \
 	papirus-icon-theme \
 	playerctl \
 	pnpm \
@@ -34,6 +39,7 @@ dnf5 -y install \
 	rclone \
 	ripgrep \
 	starship \
+	sushi \
 	tealdeer \
 	trash-cli \
 	umbriel-nightly \
@@ -47,7 +53,6 @@ ZINIT_HOME="/etc/skel/.local/share/zinit/zinit.git"
 mkdir -p "$(dirname "$ZINIT_HOME")"
 [ ! -d "$ZINIT_HOME/.git" ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 
-# Generate starship tokyo-night preset config (once, at build time)
 mkdir -p /etc/skel/.config
 starship preset tokyo-night -o /etc/skel/.config/starship.toml
 

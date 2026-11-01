@@ -12,16 +12,16 @@ if [ "$(command -v starship)" ]; then
 fi
 
 # Editor Aliases
-if [ "$(command -v zed)" ]; then
-	export EDITOR="zed"
+if [ "$(command -v micro)" ]; then
+	export EDITOR="micro"
 fi
 
 # List Aliases
 if [ "$(command -v eza)" ]; then
-	alias ls='eza --git --icons=auto --classify --group-directories-first --time-style=long-iso --color-scale'
-	alias l='eza --git --icons=auto --classify --group-directories-first --time-style=long-iso --color-scale --git-ignore'
-	alias ll='eza --git --icons=auto --classify --group-directories-first --time-style=long-iso --color-scale --all --header --long'
-	alias tree='eza --git --icons=auto --classify --group-directories-first --time-style=long-iso --color-scale --tree'
+	alias ls="eza --git --icons=auto --classify --group-directories-first --time-style=long-iso --color-scale"
+	alias l="eza --git --icons=auto --classify --group-directories-first --time-style=long-iso --color-scale --git-ignore"
+	alias ll="eza --git --icons=auto --classify --group-directories-first --time-style=long-iso --color-scale --all --header --long"
+	alias tree="eza --git --icons=auto --classify --group-directories-first --time-style=long-iso --color-scale --tree"
 fi
 
 # Zoxide Aliases
