@@ -4,7 +4,7 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
-if [ "${NVIDIA:-true}" = "true" ]; then
+if [ "${NVIDIA_VARIANT:-open}" != "none" ]; then
 	dnf5 -y install /tmp/akmods-rpms/*.rpm
 
 	dnf5 config-manager setopt fedora-multimedia.enabled=1

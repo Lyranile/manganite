@@ -12,7 +12,9 @@
 
 **Manganite** is a minimal, cloud-native desktop operating system built on the [Universal Blue](https://universal-blue.org/) `base-main` image. It layers the [Umbriel](https://noctalia.dev/umbriel) Wayland compositor (nightly, from Terra) and the [Noctalia](https://noctalia.dev/) shell on top of a desktop-free Fedora base, giving you a tiling, keyboard-driven desktop with near-zero maintenance.
 
-🌐 **Package:** [`ghcr.io/lyranile/manganite:latest`](https://github.com/Lyranile/manganite/pkgs/container/manganite)
+🌐 **Packages:**
+- Base (no NVIDIA): [`ghcr.io/lyranile/manganite:latest`](https://github.com/Lyranile/manganite/pkgs/container/manganite)
+- With NVIDIA: [`ghcr.io/lyranile/manganite-nvidia:latest`](https://github.com/Lyranile/manganite-nvidia/pkgs/container/manganite-nvidia)
 
 ## Mission
 
@@ -33,11 +35,19 @@ The easiest way to try Manganite is to install from a disk image produced by the
 
 ### Rebase from an existing bootc system
 
+Two variants are published:
+
+- **Base (no NVIDIA):** `ghcr.io/lyranile/manganite:latest`
+- **With NVIDIA (open driver):** `ghcr.io/lyranile/manganite-nvidia:latest`
+
 If you already run a `bootc`-based system (Bazzite, Bluefin, Aurora, Fedora Atomic, or another Universal Blue image), you can switch to Manganite in place:
 
 ```bash
-# Queue Manganite for the next boot
+# Base (no NVIDIA)
 sudo bootc switch ghcr.io/lyranile/manganite:latest
+
+# With NVIDIA
+sudo bootc switch ghcr.io/lyranile/manganite-nvidia:latest
 
 # Reboot to apply
 sudo systemctl reboot
@@ -126,12 +136,23 @@ sudo just build   # rootful, for rebasing locally
 - [disk_config/](./disk_config/) — bootc-image-builder configs for ISO/qcow2/raw.
 - [Justfile](./Justfile) — local build/run recipes.
 
+## Communications
+
+- **📰 Blog** — Coming soon
+- **💬 Discussions** — [GitHub Discussions](https://github.com/Lyranile/manganite/discussions) (strongly recommended!)
+- **📖 Documentation** — [docs](./docs/) / [README](./README.md)
+- **🔧 Contributing Guide** — [Contributing](#contributing)
+
 ## Community
 
 - [Universal Blue Forums](https://universal-blue.discourse.group/)
 - [Universal Blue Discord](https://discord.gg/8RZGC3uFzA)
 - [bootc discussion forums](https://github.com/bootc-dev/bootc/discussions)
 - Issues: <https://github.com/Lyranile/manganite/issues>
+
+## Code of Conduct
+
+This project follows the [Universal Blue Community Guidelines](https://universal-blue.org/contributing.html). We are committed to providing a welcoming and inclusive environment for all contributors and users.
 
 ## Contributing
 
@@ -152,6 +173,20 @@ Manganite builds upon several open source projects:
 - **Various CNCF / Flatpak projects** — cloud-native tooling and applications
 
 All incorporated components maintain their respective licenses and attributions.
+
+## Repobeats
+
+![Alt](https://repobeats.axiom.co/api/embed/placeholder.svg "Repobeats analytics image")
+
+## Star History
+
+<a href="https://star-history.com/#Lyranile/manganite&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Lyranile/manganite&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Lyranile/manganite&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Lyranile/manganite&type=Date" />
+  </picture>
+</a>
 
 ## Information needed
 
