@@ -13,8 +13,8 @@
 **Manganite** is a minimal, cloud-native desktop operating system built on the [Universal Blue](https://universal-blue.org/) `base-main` image. It layers the [Umbriel](https://noctalia.dev/umbriel) Wayland compositor (nightly, from Terra) and the [Noctalia](https://noctalia.dev/) shell on top of a desktop-free Fedora base, giving you a tiling, keyboard-driven desktop with near-zero maintenance.
 
 🌐 **Packages:**
-- With NVIDIA: [`ghcr.io/lyranile/manganite:latest`](https://github.com/Lyranile/manganite/pkgs/container/manganite)
-- Without NVIDIA: [`ghcr.io/lyranile/manganite-no-nvidia:latest`](https://github.com/Lyranile/manganite-no-nvidia/pkgs/container/manganite-no-nvidia)
+- Base (no NVIDIA): [`ghcr.io/lyranile/manganite:latest`](https://github.com/Lyranile/manganite/pkgs/container/manganite)
+- With NVIDIA: [`ghcr.io/lyranile/manganite-nvidia:latest`](https://github.com/Lyranile/manganite-nvidia/pkgs/container/manganite-nvidia)
 
 ## Mission
 
@@ -37,17 +37,17 @@ The easiest way to try Manganite is to install from a disk image produced by the
 
 Two variants are published:
 
-- **With NVIDIA (open driver):** `ghcr.io/lyranile/manganite:latest`
-- **Without NVIDIA:** `ghcr.io/lyranile/manganite-no-nvidia:latest`
+- **Base (no NVIDIA):** `ghcr.io/lyranile/manganite:latest`
+- **With NVIDIA (open driver):** `ghcr.io/lyranile/manganite-nvidia:latest`
 
 If you already run a `bootc`-based system (Bazzite, Bluefin, Aurora, Fedora Atomic, or another Universal Blue image), you can switch to Manganite in place:
 
 ```bash
-# With NVIDIA
+# Base (no NVIDIA)
 sudo bootc switch ghcr.io/lyranile/manganite:latest
 
-# Without NVIDIA
-sudo bootc switch ghcr.io/lyranile/manganite-no-nvidia:latest
+# With NVIDIA
+sudo bootc switch ghcr.io/lyranile/manganite-nvidia:latest
 
 # Reboot to apply
 sudo systemctl reboot

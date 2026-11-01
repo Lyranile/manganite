@@ -30,10 +30,10 @@ jobs:
         include:
           - variant: nvidia
             nvidia_variant: open
-            image_suffix: ""
+            image_suffix: "-nvidia"
           - variant: none
             nvidia_variant: none
-            image_suffix: "-no-nvidia"
+            image_suffix: ""
 
     permissions:
       contents: read
