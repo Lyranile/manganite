@@ -59,7 +59,7 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
 # Core
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     dnf -y install \
-      os-prober polkit gdm just make pnpm gcc git uv go-task
+      os-prober polkit greetd just make pnpm gcc git uv go-task
 
 # CLI tools
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
@@ -126,8 +126,8 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
 
 # Enable base variant services getty on tty1, rpm-ostree timers, flatpak
 RUN systemctl set-default graphical.target && \
-    systemctl enable gdm.service && \
-    systemctl enable getty@tty1 && \
+    systemctl enable greetd.service && \
+    systemctl disable getty@tty1 2>/dev/null || true; \
     systemctl enable rpm-ostreed-automatic.timer flatpak-system-update.timer && \
     systemctl --global enable flatpak-user-update.timer && \
     systemctl enable flatpak-nuke-fedora.service
@@ -145,9 +145,8 @@ RUN if [ -f /etc/default/grub ]; then \
         grep -q '^GRUB_DISABLE_OS_PROBER=' /etc/default/grub || echo 'GRUB_DISABLE_OS_PROBER=false' >> /etc/default/grub; \
     fi
 
-# GDM auto login
-RUN mkdir -p /etc/gdm && \
-    printf '%s\n' '[daemon]' 'AutomaticLoginEnable=true' 'AutomaticLogin=user' 'DefaultSession=umbriel' > /etc/gdm/custom.conf
+# Default user for auto-login / testing
+RUN id user >/dev/null 2>&1 || useradd -m -s /usr/bin/zsh -G wheel user
 
 # Cleanup temporary files
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \

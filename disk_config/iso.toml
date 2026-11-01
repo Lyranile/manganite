@@ -19,3 +19,11 @@ enable = [
 disable = [
   "org.fedoraproject.Anaconda.Modules.Subscription",
 ]
+
+[customizations.iso]
+volume_id = "manganite"
+application_id = "manganite"
+publisher = "lyranile"
+
+[customizations.kernel]
+append = "inst.dark"
