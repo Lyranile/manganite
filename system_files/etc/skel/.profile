@@ -1,7 +1,6 @@
 # Path Arguments
 export PATH="$HOME/.local/bin:$HOME/bin:/usr/bin:/run/host/usr/bin"
 export XDG_CONFIG_HOME="$HOME/.config"
-export HOMEBREW_NO_ENV_HINTS=1
 
 # Shell Name
 SHELL=$(cat /proc/$$/comm)
