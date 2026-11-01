@@ -84,6 +84,11 @@ if [ "$(command -v python3)" ]; then
 	alias venv="source .venv/bin/activate"
 fi
 
+# Bazaar Aliases
+if [ "$(command -v flatpak)" ]; then
+	alias bazaar='flatpak run --command=bazaar io.github.kolunmi.Bazaar'
+fi
+
 # UV Aliases
 if [ "$(command -v uv)" ]; then
 	eval '$(uv generate-shell-completion ${SHELL})'
