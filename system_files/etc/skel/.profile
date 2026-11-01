@@ -52,6 +52,11 @@ if [ "$(command -v tldr)" ]; then
 	alias man="tldr"
 fi
 
+# Bottom Aliases
+if [ "$(command -v btm)" ]; then
+	alias top="btm"
+fi
+
 # Difference Aliases
 if [ "$(command -v delta)" ]; then
 	alias diff="delta"
