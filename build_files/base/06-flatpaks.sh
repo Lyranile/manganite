@@ -8,7 +8,6 @@ flatpak install --system --noninteractive flathub \
 	com.github.tchx84.Flatseal \
 	io.github.kolunmi.Bazaar \
 	net.nokyan.Resources \
-	net.waterfox.waterfox \
 	org.gnome.baobab \
 	org.gnome.Calculator \
 	org.gnome.Characters \

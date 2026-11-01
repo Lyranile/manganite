@@ -5,9 +5,9 @@ echo "::group:: ===$(basename "$0")==="
 set -eoux pipefail
 
 dnf5 -y install \
-	android-tools \
 	bat \
 	bibata-cursor-theme \
+	btop \
 	brightnessctl \
 	cava \
 	duf \
@@ -20,7 +20,6 @@ dnf5 -y install \
 	git \
 	go-task \
 	greetd \
-	htop \
 	i2c-tools \
 	just \
 	make \
