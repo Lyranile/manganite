@@ -21,7 +21,7 @@ disable = [
 ]
 
 [customizations.iso]
-volume_id = "manganite"
+volume_id = "MANGANITE"
 application_id = "manganite"
 publisher = "lyranile"
 

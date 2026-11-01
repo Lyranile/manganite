@@ -46,7 +46,7 @@ repos:
         args:
           - --fix
   - repo: https://github.com/oxc-project/mirrors-oxfmt
-    rev: v0.67.0
+    rev: v0.74.0
     hooks:
       - id: oxfmt
   - repo: https://github.com/google/yamlfmt
@@ -57,7 +57,7 @@ repos:
           - -formatter
           - retain_line_breaks=true
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.49.1
+    rev: v0.50.0
     hooks:
       - id: markdownlint
         args:
