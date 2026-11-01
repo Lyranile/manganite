@@ -25,7 +25,7 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=bind,from=akmods,source=/kernel-rpms,target=/tmp/kernel-rpms \
     --mount=type=bind,from=akmods,source=/rpms/ublue-os,target=/tmp/akmods-rpms \
     --mount=type=bind,from=akmods-nvidia,source=/rpms,target=/tmp/akmods-nv-rpms \
-    /ctx/build_files/build.sh
+    /ctx/build_files/shared/build.sh
 
 CMD ["/sbin/init"]
 

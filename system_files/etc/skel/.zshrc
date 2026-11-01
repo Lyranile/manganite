@@ -1,5 +1,3 @@
-export HOMEBREW_NO_ENV_HINTS=1
-
 # Zinit
 ZINIT_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
 source "$ZINIT_HOME/zinit.zsh"
@@ -15,11 +13,15 @@ setopt APPEND_HISTORY
 setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
 setopt AUTO_CD
 setopt COMPLETE_IN_WORD
 setopt AUTO_MENU
 setopt INTERACTIVE_COMMENTS
+setopt AUTO_PUSHD
+setopt PUSHD_IGNORE_DUPS
+setopt CORRECT
 
 # Oh My Zsh Plugins
 zinit wait lucid for \
@@ -74,10 +76,16 @@ zinit light MichaelAquilina/zsh-you-should-use
 zinit ice wait lucid
 zinit light jirutka/zsh-shift-select
 
-# Styles
+# Completion styles
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$HOME/.zcompcache"
+
+# Completion colors
+typeset -a colors
+IFS=: read -rA colors <<< "$LS_COLORS"
+zstyle ':completion:*' list-colors "${colors[@]}"
 
 # Bindkeys
 bindkey -e
@@ -115,7 +123,5 @@ rm -f ~/.zcompdump
 compinit
 
 # Profile Loading
+source "$HOME/.profile"
 fpath+=~/.zfunc; autoload -Uz compinit; compinit
-
-# Source managed
-[ -f /etc/profile.d/manganite.sh ] && source /etc/profile.d/manganite.sh

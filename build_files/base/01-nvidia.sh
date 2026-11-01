@@ -39,6 +39,7 @@ if [ "${NVIDIA:-true}" = "true" ]; then
     find /boot -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null || true
 
     dnf5 versionlock add kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra
+    AKMODNV_PATH=/tmp/akmods-nv-rpms /tmp/akmods-nv-rpms/ublue-os/nvidia-install.sh
 fi
 
 echo "::endgroup::"

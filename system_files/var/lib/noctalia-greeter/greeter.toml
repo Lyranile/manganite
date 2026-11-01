@@ -1,0 +1,16 @@
+[appearance]
+scheme = "Tokyo-Night"
+theme_mode = "dark"
+hide_logo = false
+power_buttons_position = "bottom-right"
+scheme_selector_position = "top-right"
+
+[appearance.wallpaper]
+path = "/usr/share/icons/hicolor/scalable/apps/background.svg"
+fill_mode = "crop"
+
+[clock]
+enabled = true
+position = "above-panel"
+time_format = "{:%H:%M:%S}"
+date_format = "%d/%m/%y"

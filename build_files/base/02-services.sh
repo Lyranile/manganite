@@ -10,7 +10,6 @@ curl --retry 3 -Lo /etc/flatpak/remotes.d/flathub.flatpakrepo https://dl.flathub
 mv -f /usr/lib/systemd/system/flatpak-add-flathub-repos.service /usr/lib/systemd/system/flatpak-add-fedora-repos.service 2>/dev/null || true
 
 systemctl set-default graphical.target && \
-systemctl enable greetd.service && \
 systemctl disable getty@tty1 2>/dev/null || true; \
 systemctl enable rpm-ostreed-automatic.timer flatpak-system-update.timer && \
 systemctl --global enable flatpak-user-update.timer && \
