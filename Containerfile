@@ -3,7 +3,7 @@ ARG BASE_IMAGE_NAME="base-main"
 ARG BASE_IMAGE_TAG="44"
 ARG BASE_IMAGE="ghcr.io/ublue-os/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}"
 ARG ENABLE_REPOS="terra"
-ARG NVIDIA="true"
+ARG NVIDIA_VARIANT="open"  # open | none
 
 FROM scratch AS ctx
 COPY build_files /build_files
@@ -16,7 +16,9 @@ FROM ${BASE_IMAGE}
 
 ARG IMAGE_NAME
 ARG ENABLE_REPOS
-ARG NVIDIA
+ARG NVIDIA_VARIANT
+
+ENV NVIDIA_VARIANT=${NVIDIA_VARIANT}
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
   --mount=type=cache,dst=/var/cache \

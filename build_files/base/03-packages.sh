@@ -26,6 +26,7 @@ dnf5 -y install \
 	just \
 	make \
 	micro \
+	mise \
 	nautilus \
 	nautilus-extensions \
 	noctalia \
