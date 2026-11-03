@@ -2,11 +2,6 @@
 export PATH="$HOME/.local/bin:$HOME/bin:/usr/bin:/run/host/usr/bin"
 export XDG_CONFIG_HOME="$HOME/.config"
 
-# Homebrew (brew) - add to PATH if installed
-if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
-	eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
-
 # Shell Name
 SHELL=$(cat /proc/$$/comm)
 
