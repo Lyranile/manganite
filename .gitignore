@@ -1,8 +1,19 @@
+# Environment & secrets
 !image-template.env
 *.env
+cosign.key
+
+# Build artifacts
+_build*
+changelog.md
+manifest*.json
+output/
+result*
+sbom_out
+
+# Container & VM images
 *.img
 *.iso
-*.log
 *.oci
 *.qcow2
 *.raw
@@ -10,18 +21,16 @@
 *.tar
 *.tar.gz
 *.tar.zst
+
+# Temporary & cache
 *.tmp
+*.log
 .backup/
 .buildah/
 .cache/
 .podman/
-_build*
-changelog.md
-cosign.key
-devcontainer
-manifest*.json
-output/
-result*
-sbom_out
 temp/
 tmp/
+
+# Devcontainer
+devcontainer
