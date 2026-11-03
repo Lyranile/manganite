@@ -4,7 +4,7 @@ set -eoux pipefail
 
 echo "::group:: Copy Files"
 dnf config-manager setopt keepcache=1
-rsync -rvKl /ctx/system_files/. /
+rsync -rvKl --chown=0:0 /ctx/system_files/. /
 mkdir -p /var/roothome
 echo "::endgroup::"
 
