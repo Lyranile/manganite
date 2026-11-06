@@ -1,5 +1,0 @@
-GRUB_TIMEOUT=60
-GRUB_DEFAULT=saved
-GRUB_SAVEDEFAULT=true
-GRUB_DISABLE_OS_PROBER=false
-GRUB_THEME="/usr/share/grub/themes/tokyo-night/theme.txt"
