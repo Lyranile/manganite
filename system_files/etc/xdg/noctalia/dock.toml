@@ -1,0 +1,6 @@
+# Noctalia dock configuration
+# Split from config.toml
+
+[dock]
+enabled = true
+shadow = false

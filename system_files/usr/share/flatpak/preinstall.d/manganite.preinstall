@@ -57,3 +57,7 @@ IsRuntime=false
 [Flatpak Preinstall org.gnome.Snapshot]
 Branch=stable
 IsRuntime=false
+
+[Flatpak Preinstall org.gnome.World.Iotas]
+Branch=stable
+IsRuntime=false

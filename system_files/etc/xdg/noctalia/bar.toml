@@ -1,0 +1,6 @@
+# Noctalia bar configuration
+# Split from config.toml
+
+[bar.default]
+shadow = false
+contact_shadow = false
