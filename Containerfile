@@ -1,6 +1,6 @@
 ARG IMAGE_NAME="manganite"
 ARG BASE_IMAGE_NAME="base-main"
-ARG BASE_IMAGE_TAG="44"
+ARG BASE_IMAGE_TAG="45"
 ARG BASE_IMAGE="ghcr.io/ublue-os/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}"
 ARG ENABLE_REPOS="terra"
 ARG NVIDIA_VARIANT="open"  # open | none

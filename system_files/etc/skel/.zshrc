@@ -81,11 +81,7 @@ zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path "$HOME/.zcompcache"
-
-# Completion colors
-typeset -a colors
-IFS=: read -rA colors <<< "$LS_COLORS"
-zstyle ':completion:*' list-colors "${colors[@]}"
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 # Bindkeys
 bindkey -e
@@ -124,4 +120,3 @@ compinit
 
 # Profile Loading
 source "$HOME/.profile"
-fpath+=~/.zfunc; autoload -Uz compinit; compinit

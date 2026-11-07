@@ -7,3 +7,13 @@ date_format = "%d/%m/%y"
 
 [shell.panel]
 shadow = false
+
+[shell.window_switcher]
+colorize_icons = false
+style = "carousel"
+mru = true
+show_caption = true
+show_count = true
+show_app_icon = true
+show_all_outputs = true
+current_workspace_only = false

@@ -86,8 +86,8 @@ accel_profile = "flat"
 "Mod+Ctrl+Right" = "window-move-or-output-right"
 "Mod+Ctrl+Up" = "window-move-or-output-up"
 "Mod+Ctrl+Down" = "window-move-or-output-down"
-"Alt+Tab" = "window-focus-next"
-"Alt+Shift+Tab" = "window-focus-previous"
+"Alt+Tab" = "spawn noctalia msg window-switcher hold"
+"Alt+Shift+Tab" = "spawn noctalia msg window-switcher hold reverse"
 
 "Print" = { action = "spawn noctalia msg screenshot-region", repeat = false }
 "Shift+Print" = { action = "spawn noctalia msg screenshot-fullscreen", repeat = false }
