@@ -109,13 +109,8 @@ if [ "$(command -v flatpak)" ]; then
   		eval "alias $1='flatpak run $2'"
   	fi
   }
-  flatpak_alias pinta com.github.PintaProject.Pinta
   flatpak_alias flatseal com.github.tchx84.Flatseal
-  flatpak_alias collision dev.geopjr.Collision
-  flatpak_alias warehouse io.github.flattool.Warehouse
   flatpak_alias bazaar io.github.kolunmi.Bazaar
-  flatpak_alias converter io.gitlab.adhami3310.Converter
-  flatpak_alias impression io.gitlab.adhami3310.Impression
   flatpak_alias resources net.nokyan.Resources
   flatpak_alias waterfox net.waterfox.waterfox
   flatpak_alias baobab org.gnome.baobab
