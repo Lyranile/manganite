@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# ublue-user-setup: runs user setup hooks on first login / after image update
+
+USER_HOOKS_DIRECTORY="/usr/share/ublue-os/user-setup.hooks.d"
+
+if [ -d "$USER_HOOKS_DIRECTORY" ]; then
+	for script in "$USER_HOOKS_DIRECTORY"/*; do
+		[ -f "$script" ] && bash "$script"
+	done
+fi

@@ -1,0 +1,6 @@
+# Noctalia wallpaper configuration
+# Split from config.toml
+
+[wallpaper]
+default.path = "/usr/share/icons/hicolor/scalable/apps/background.svg"
+fill_mode = "crop"

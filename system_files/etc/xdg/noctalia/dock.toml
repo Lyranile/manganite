@@ -1,0 +1,34 @@
+# Noctalia dock configuration
+# Split from config.toml
+
+[dock]
+enabled = true
+position = "bottom"
+icon_size = 48
+item_spacing = 6
+background_opacity = 0.88
+compositor_blur = true
+border = "outline_variant"
+border_width = 0.0
+shadow = true
+radius = 16
+concave_edge_corners = true
+margin_ends = 0
+margin_edge = 0
+show_running = true
+show_dots = true
+show_instance_count = true
+auto_hide = true
+auto_hide_reveal_delay_ms = 250
+smart_auto_hide = false
+reserve_space = true
+layer = "top"
+active_scale = 1.0
+inactive_scale = 0.85
+magnification = false
+active_opacity = 1.0
+inactive_opacity = 0.85
+icon_saturation = 1.0
+launcher_position = "start"
+launcher_icon = "grid-dots"
+pinned = ["waterfox", "org.gnome.Nautilus", "ghostty", "org.gnome.Console"]

@@ -1,13 +1,16 @@
 ARG IMAGE_NAME="manganite"
 ARG BASE_IMAGE_NAME="base-main"
-ARG BASE_IMAGE_TAG="44"
+ARG BASE_IMAGE_TAG="45"
 ARG BASE_IMAGE="ghcr.io/ublue-os/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}"
 ARG ENABLE_REPOS="terra"
 ARG NVIDIA_VARIANT="open"  # open | none
 
+FROM ghcr.io/ublue-os/brew:latest AS brew
+
 FROM scratch AS ctx
 COPY build_files /build_files
 COPY system_files /system_files
+COPY --from=brew /system_files /system_files
 
 FROM ghcr.io/ublue-os/akmods:main-${BASE_IMAGE_TAG} AS akmods
 FROM ghcr.io/ublue-os/akmods-nvidia-open:main-${BASE_IMAGE_TAG} AS akmods-nvidia
@@ -22,7 +25,8 @@ ENV NVIDIA_VARIANT=${NVIDIA_VARIANT}
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
   --mount=type=cache,dst=/var/cache \
-  --mount=type=cache,dst=/var/log \
+  --mount=type=tmpfs,dst=/var/log \
+  --mount=type=tmpfs,dst=/boot \
   --mount=type=tmpfs,dst=/tmp \
   --mount=type=bind,from=akmods,source=/kernel-rpms,target=/tmp/kernel-rpms \
   --mount=type=bind,from=akmods,source=/rpms/ublue-os,target=/tmp/akmods-rpms \
