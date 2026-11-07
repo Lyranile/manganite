@@ -1,2 +1,3 @@
 enable greetd.service
 enable flatpak-nuke-fedora.service
+enable brew-bundle.service

@@ -12,14 +12,7 @@ IMPORTANT_PACKAGES=(
 	umbriel-nightly
 	xdg-desktop-portal-umbriel-nightly
 	ghostty
-	starship
 	zsh
-	just
-	micro
-	bat
-	eza
-	fzf
-	zoxide
 )
 
 for package in "${IMPORTANT_PACKAGES[@]}"; do

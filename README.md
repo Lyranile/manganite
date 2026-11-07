@@ -90,6 +90,7 @@ sudo systemctl reboot
 - **Compositor**: Umbriel (nightly, from Terra) + `xdg-desktop-portal-umbriel`.
 - **Shell**: Noctalia (with `noctalia-greeter` on `greetd`).
 - **Terminal / tools**: Ghostty, Yazi, Zsh (with Zinit), Starship, fastfetch, eza, bat, fzf, zoxide, just, go-task, and more.
+- **Package manager**: Homebrew (via `ublue-os/brew`), unpacked on first boot; use `brew` for CLI tools instead of `mise`. A default `Brewfile` is shipped at `/usr/share/ublue-os/Brewfile` (install with `brew bundle --file=/usr/share/ublue-os/Brewfile`).
 - **GUI apps** (Flatpak, from Flathub): Waterfox, Zed, LibreOffice, Pinta, and a curated set of GNOME utilities.
 - **Graphics**: NVIDIA proprietary akmods with a pinned kernel (see [NVIDIA](#nvidia)).
 - **Updates**: `rpm-ostreed-automatic.timer`, `flatpak-system-update.timer`, and `flatpak-user-update.timer` enabled by default.

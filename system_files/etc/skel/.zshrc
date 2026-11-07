@@ -1,8 +1,3 @@
-# Zinit
-ZINIT_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
-source "$ZINIT_HOME/zinit.zsh"
-fpath+="$HOME/.zfunc"
-
 # History
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=10000
@@ -23,58 +18,57 @@ setopt AUTO_PUSHD
 setopt PUSHD_IGNORE_DUPS
 setopt CORRECT
 
-# Oh My Zsh Plugins
-zinit wait lucid for \
-  OMZL::completion.zsh \
-  OMZL::directories.zsh \
-  OMZL::history.zsh \
-  OMZP::git \
-  OMZP::kubectl \
-  OMZP::docker-compose \
-  OMZP::aws \
-  OMZP::terraform \
-  OMZP::helm \
-  OMZP::kubectx \
-  OMZP::command-not-found \
-  OMZP::sudo
+# Zinit (optional; loaded only if installed via Homebrew)
+ZINIT_HOME="/home/linuxbrew/.linuxbrew/opt/zinit"
+if [ -f "$ZINIT_HOME/zinit.zsh" ]; then
+  source "$ZINIT_HOME/zinit.zsh"
 
-_setup_history_substring_keys() {
-  bindkey '^[[A' history-substring-search-up
-  bindkey '^[[B' history-substring-search-down
-}
+  # Oh My Zsh Plugins
+  zinit wait lucid for \
+    OMZL::completion.zsh \
+    OMZL::directories.zsh \
+    OMZL::history.zsh \
+    OMZP::git \
+    OMZP::kubectl \
+    OMZP::docker-compose \
+    OMZP::aws \
+    OMZP::terraform \
+    OMZP::helm \
+    OMZP::kubectx \
+    OMZP::command-not-found \
+    OMZP::sudo
 
-_setup_instructions() {
-  zicompinit
-  zicdreplay
-}
+  # Command Completions
+  zinit ice wait lucid blockf
+  zinit light zsh-users/zsh-completions
 
-# Command Completions
-zinit ice wait lucid blockf
-zinit light zsh-users/zsh-completions
+  # Command Autosuggestions
+  zinit ice wait lucid atload'_zsh_autosuggest_start'
+  zinit light zsh-users/zsh-autosuggestions
 
-# Command Autosuggestions
-zinit ice wait lucid atload'_zsh_autosuggest_start'
-zinit light zsh-users/zsh-autosuggestions
+  # Substring Search
+  zinit ice wait lucid atload'bindkey "^[[A" history-substring-search-up; bindkey "^[[B" history-substring-search-down'
+  zinit light zsh-users/zsh-history-substring-search
 
-# Substring Search
-zinit ice wait lucid atload'_setup_history_substring_keys'
-zinit light zsh-users/zsh-history-substring-search
+  # Syntax Highlighting
+  zinit ice wait lucid
+  zinit light zdharma-continuum/fast-syntax-highlighting
 
-# Syntax Highlighting
-zinit ice wait lucid
-zinit light zdharma-continuum/fast-syntax-highlighting
+  # Bracket Closing
+  zinit ice wait lucid
+  zinit light hlissner/zsh-autopair
 
-# Bracket Closing
-zinit ice wait lucid
-zinit light hlissner/zsh-autopair
+  # Aliased Commands
+  zinit ice wait lucid
+  zinit light MichaelAquilina/zsh-you-should-use
 
-# Aliased Commands
-zinit ice wait lucid
-zinit light MichaelAquilina/zsh-you-should-use
+  # Shift Selection
+  zinit ice wait lucid
+  zinit light jirutka/zsh-shift-select
+fi
 
-# Shift Selection
-zinit ice wait lucid
-zinit light jirutka/zsh-shift-select
+fpath+="$HOME/.zfunc"
+fpath+=(/home/linuxbrew/.linuxbrew/share/zsh/site-functions)
 
 # Completion styles
 zstyle ':completion:*' menu select
