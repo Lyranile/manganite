@@ -7,8 +7,8 @@ set -eoux pipefail
 dnf5 -y install \
 	anaconda \
 	anaconda-dracut \
+	anaconda-gui \
 	anaconda-install-img-deps \
-	anaconda-webui \
 	bibata-cursor-theme \
 	dracut-config-generic \
 	dracut-live \
@@ -35,7 +35,6 @@ dnf5 -y install \
 	polkit \
 	squashfs-tools \
 	shim \
-	slitherer \
 	sushi \
 	umbriel-nightly \
 	xdg-desktop-portal-umbriel-nightly \
