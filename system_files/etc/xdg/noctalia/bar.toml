@@ -1,0 +1,10 @@
+# Noctalia bar configuration
+# Split from config.toml
+
+[bar.default]
+shadow = false
+contact_shadow = false
+
+[widget.launcher]
+glyph = "menu-2"
+show_tooltip = true

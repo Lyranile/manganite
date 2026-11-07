@@ -1,0 +1,7 @@
+# Noctalia theme configuration
+# Split from config.toml
+
+[theme]
+mode = "dark"
+source = "builtin"
+builtin = "Tokyo-Night"

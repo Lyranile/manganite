@@ -80,14 +80,13 @@ zinit light jirutka/zsh-shift-select
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path "$HOME/.zcompcache"
+zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
 
-# Completion colors
-typeset -a colors
-IFS=: read -rA colors <<< "$LS_COLORS"
-zstyle ':completion:*' list-colors "${colors[@]}"
+# Colors styling
+eval "$(dircolors -b)"
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
-# Bindkeys
+# Key bindings
 bindkey -e
 
 # Word movement
@@ -117,11 +116,11 @@ bindkey "\e[F" end-of-line
 bindkey "^I" menu-complete
 bindkey "\e[Z" reverse-menu-complete
 
-# Compute Initialization
-autoload -Uz compinit
-rm -f ~/.zcompdump
-compinit
-
 # Profile Loading
 source "$HOME/.profile"
-fpath+=~/.zfunc; autoload -Uz compinit; compinit
+fpath+=~/.zfunc
+
+# Compute Initialization (after profile so fpath/LS_COLORS are final)
+autoload -Uz compinit
+mkdir -p "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
+compinit

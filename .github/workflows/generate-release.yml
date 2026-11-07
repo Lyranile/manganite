@@ -35,7 +35,7 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 500
-          ref: stable-f44
+          ref: stable-f45
 
       - name: Install Just
         run: |

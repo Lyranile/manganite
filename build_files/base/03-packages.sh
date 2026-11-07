@@ -36,12 +36,13 @@ dnf5 -y install \
 	papirus-icon-theme \
 	playerctl \
 	pnpm \
+	podman \
+	podman-compose \
 	polkit \
 	rclone \
 	ripgrep \
 	starship \
 	sushi \
-	tealdeer \
 	trash-cli \
 	umbriel-nightly \
 	uv \
