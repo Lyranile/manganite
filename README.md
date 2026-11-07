@@ -86,7 +86,7 @@ sudo systemctl reboot
 
 ## What's included
 
-- **Base**: Universal Blue `base-main` (Fedora 44, desktop-free).
+- **Base**: Universal Blue `base-main` (Fedora 45, desktop-free).
 - **Compositor**: Umbriel (nightly, from Terra) + `xdg-desktop-portal-umbriel`.
 - **Shell**: Noctalia (with `noctalia-greeter` on `greetd`).
 - **Terminal / tools**: Ghostty, Yazi, Zsh (with Zinit), Starship, fastfetch, eza, bat, fzf, zoxide, just, go-task, and more.

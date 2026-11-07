@@ -47,11 +47,6 @@ if [ "$(command -v pnpm)" ]; then
 	alias npx='pnpm exec'
 fi
 
-# Man Aliases
-if [ "$(command -v tldr)" ]; then
-	alias man="tldr"
-fi
-
 # Bottom Aliases
 if [ "$(command -v btm)" ]; then
 	alias top="btm"

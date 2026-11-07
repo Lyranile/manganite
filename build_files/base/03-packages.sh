@@ -43,7 +43,6 @@ dnf5 -y install \
 	ripgrep \
 	starship \
 	sushi \
-	tealdeer \
 	trash-cli \
 	umbriel-nightly \
 	uv \
