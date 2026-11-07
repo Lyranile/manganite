@@ -319,6 +319,7 @@ _build-bib $target_image $tag $type $config: (_rootful_load_image target_image t
         ghcr.io/osbuild/image-builder-cli:latest \
         build \
         --output-dir /output \
+        --output-name "${target_image##*/}" \
         --bootc-ref "${target_image}:${tag}" \
         --bootc-default-fs btrfs \
         generic-iso
@@ -389,7 +390,7 @@ _run-vm $target_image $tag $type $config:
     # Determine the image file based on the type
     image_file="output/${type}/disk.${type}"
     if [[ $type == iso ]]; then
-        image_file="output/bootiso/install.iso"
+        image_file="output/${target_image##*/}.iso"
     fi
 
     # Build the image if it does not exist
