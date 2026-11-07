@@ -36,6 +36,8 @@ dnf5 -y install \
 	papirus-icon-theme \
 	playerctl \
 	pnpm \
+	podman \
+	podman-compose \
 	polkit \
 	rclone \
 	ripgrep \

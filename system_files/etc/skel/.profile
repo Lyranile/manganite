@@ -62,6 +62,14 @@ if [ "$(command -v delta)" ]; then
 	alias diff="delta"
 fi
 
+# Docker Aliases
+if [ "$(command -v podman)" ]; then
+	alias docker="podman"
+fi
+if [ "$(command -v podman-compose)" ]; then
+	alias docker-compose="podman-compose"
+fi
+
 # Task Aliases
 if [ "$(command -v go-task)" ]; then
 	alias task="go-task"
