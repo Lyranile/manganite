@@ -1,0 +1,10 @@
+label: "Manganite"
+grub2:
+  timeout: 3
+  entries:
+    - name: "Install Manganite"
+      linux: "/images/pxeboot/vmlinuz inst.stage2=hd:LABEL=Manganite console=tty0 inst.text inst.dark"
+      initrd: "/images/pxeboot/initrd.img"
+    - name: "Install Manganite (Basic Graphics)"
+      linux: "/images/pxeboot/vmlinuz inst.stage2=hd:LABEL=Manganite console=tty0 inst.text nomodeset inst.dark"
+      initrd: "/images/pxeboot/initrd.img"
