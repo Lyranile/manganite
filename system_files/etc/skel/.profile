@@ -118,7 +118,6 @@ if [ "$(command -v flatpak)" ]; then
   flatpak_alias impression io.gitlab.adhami3310.Impression
   flatpak_alias resources net.nokyan.Resources
   flatpak_alias waterfox net.waterfox.waterfox
-  flatpak_alias bustle org.freedesktop.Bustle
   flatpak_alias baobab org.gnome.baobab
   flatpak_alias calculator org.gnome.Calculator
   flatpak_alias characters org.gnome.Characters
@@ -130,7 +129,5 @@ if [ "$(command -v flatpak)" ]; then
   flatpak_alias papers org.gnome.Papers
   flatpak_alias showtime org.gnome.Showtime
   flatpak_alias snapshot org.gnome.Snapshot
-  flatpak_alias libreoffice org.libreoffice.LibreOffice
-  flatpak_alias junction re.sonny.Junction
   unset flatpak_alias
 fi

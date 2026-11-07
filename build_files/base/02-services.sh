@@ -15,6 +15,7 @@ systemctl set-default graphical.target &&
 systemctl enable rpm-ostreed-automatic.timer flatpak-system-update.timer flatpak-preinstall.service &&
 	systemctl --global enable flatpak-user-update.timer bazaar.service ublue-user-setup.service &&
 	systemctl enable flatpak-nuke-fedora.service
+systemctl mask systemd-remount-fs.service 2>/dev/null || true
 
 cp /usr/share/ublue-os/update-services/etc/rpm-ostreed.conf /etc/rpm-ostreed.conf 2>/dev/null || true &&
 	if [ -f /etc/default/grub ]; then
