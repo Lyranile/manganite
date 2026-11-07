@@ -34,10 +34,6 @@ IsRuntime=false
 Branch=stable
 IsRuntime=false
 
-[Flatpak Preinstall org.gnome.FileRoller]
-Branch=stable
-IsRuntime=false
-
 [Flatpak Preinstall org.gnome.Logs]
 Branch=stable
 IsRuntime=false

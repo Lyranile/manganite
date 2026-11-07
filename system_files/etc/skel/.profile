@@ -123,7 +123,6 @@ if [ "$(command -v flatpak)" ]; then
   flatpak_alias characters org.gnome.Characters
   flatpak_alias clocks org.gnome.clocks
   flatpak_alias decibels org.gnome.Decibels
-  flatpak_alias fileroller org.gnome.FileRoller
   flatpak_alias logs org.gnome.Logs
   flatpak_alias loupe org.gnome.Loupe
   flatpak_alias papers org.gnome.Papers
