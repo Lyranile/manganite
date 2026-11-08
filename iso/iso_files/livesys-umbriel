@@ -1,0 +1,32 @@
+#!/usr/bin/sh
+#
+# live-umbriel: Umbriel-specific setup for livesys
+#
+
+UMBRIEL_SESSION_FILE="umbriel.desktop"
+
+# set up autologin for user liveuser via greetd
+# Only append a new initial_session block; do not modify the default greeter session.
+if [ -f /etc/greetd/config.toml ]; then
+    if ! grep -q '^\[initial_session\]' /etc/greetd/config.toml; then
+        cat >> /etc/greetd/config.toml <<GREETD_EOF
+
+[initial_session]
+command = "start-umbriel"
+user = "liveuser"
+GREETD_EOF
+    fi
+fi
+
+# Show harddisk install on the desktop
+sed -i -e 's/NoDisplay=true/NoDisplay=false/' /usr/share/applications/liveinst.desktop 2>/dev/null || true
+mkdir -p /home/liveuser/Desktop
+
+# echoing type liveinst to start the installer
+echo "echo 'Please type liveinst and press Enter to start the installer'" >> /home/liveuser/.bashrc 2>/dev/null || true
+
+# Use Umbriel configuration files for live environment if present
+if [ -d /usr/share/umbriel/config.live.d ]; then
+    mkdir -p /home/liveuser/.config/umbriel/
+    cp -a /usr/share/umbriel/config.live.d/. /home/liveuser/.config/umbriel/ 2>/dev/null || true
+fi

@@ -9,6 +9,10 @@ export image_logo_url := env_var("IMAGE_LOGO_URL")
 export default_tag := env_var("DEFAULT_TAG")
 export bib_image := env_var("BIB_IMAGE")
 
+export PODMAN := "podman"
+export BUILDAH := "buildah"
+export SUDOIF := if `id -u` == "0" { "" } else { "sudo" }
+
 alias build-vm := build-qcow2
 alias rebuild-vm := rebuild-qcow2
 alias run-vm := run-vm-qcow2
@@ -477,3 +481,96 @@ format:
     fi
     # Run shfmt on all Bash scripts
     find . -iname "*.sh" -type f -exec shfmt --write "{}" ';'
+
+# Run Container
+[group('Utility')]
+run $target_image=image_name $tag=default_tag:
+    #!/usr/bin/env bash
+    set -eoux pipefail
+    ${PODMAN} run -it --rm "${target_image}:${tag}" bash
+
+# Create bootable disk image
+[group('Utility')]
+disk-image $target_image=image_name $tag=default_tag:
+    #!/usr/bin/env bash
+    set -eoux pipefail
+    IMG_SIZE=40G
+    BYTES_IMAGE_SIZE=$(numfmt --from=iec ${IMG_SIZE})
+    if [ ! -e "./bootable.img" ]; then
+        fallocate -l "${BYTES_IMAGE_SIZE}" "./bootable.img"
+    fi
+    ${SUDOIF} ${PODMAN} run --rm --privileged --pid=host \
+        -v /var/lib/containers:/var/lib/containers \
+        -v /dev:/dev \
+        -v "${PWD}:/data" \
+        "${target_image}:${tag}" \
+        bootc install to-disk --generic-image --via-loopback /data/bootable.img --wipe --bootloader grub
+
+# Export OCI archive for PR testing
+[group('Utility')]
+export-oci $target_image=image_name $tag=default_tag:
+    #!/usr/bin/env bash
+    set -eoux pipefail
+    ARCHIVE_NAME="${target_image##*/}-$(arch).oci"
+    ${PODMAN} push --compression-format=zstd --compression-level=3 \
+        "${target_image}:${tag}" "oci-archive:${ARCHIVE_NAME}"
+
+# Run bootc commands inside the image
+[group('Utility')]
+bootc $target_image=image_name $tag=default_tag *ARGS:
+    #!/usr/bin/env bash
+    set -eoux pipefail
+    ${PODMAN} run --rm --privileged --pid=host \
+        -v /var/lib/containers:/var/lib/containers \
+        -v /dev:/dev \
+        -v "${PWD}:/data" \
+        "${target_image}:${tag}" bootc {{ ARGS }}
+
+# Secure Boot signature check
+[group('Utility')]
+secureboot $target_image=image_name $tag=default_tag:
+    #!/usr/bin/env bash
+    set -eoux pipefail
+    kernel_release=$(${PODMAN} inspect "${target_image}:${tag}" | jq -r '.[].Config.Labels["ostree.linux"]')
+    TMP=$(${PODMAN} create "${target_image}:${tag}" bash)
+    ${PODMAN} cp "$TMP":/usr/lib/modules/"${kernel_release}"/vmlinuz /tmp/vmlinuz
+    ${PODMAN} rm "$TMP"
+    curl --retry 3 -Lo /tmp/akmods.der https://github.com/ublue-os/akmods/raw/main/certs/public_key.der
+    openssl x509 -in /tmp/akmods.der -out /tmp/akmods.crt 2>/dev/null || true
+    CMD="$(command -v sbverify || true)"
+    if [[ -z "${CMD:-}" ]]; then
+        temp_name="sbverify-${RANDOM}"
+        ${PODMAN} run -dt --entrypoint /bin/sh \
+            --volume /tmp/vmlinuz:/tmp/vmlinuz:z \
+            --volume /tmp/akmods.crt:/tmp/akmods.crt:z \
+            --name "${temp_name}" docker.io/library/alpine:edge
+        ${PODMAN} exec "${temp_name}" apk add sbsigntool >/dev/null
+        CMD="${PODMAN} exec ${temp_name} /usr/bin/sbverify"
+    fi
+    $CMD --list /tmp/vmlinuz
+    if ! $CMD --cert /tmp/akmods.crt /tmp/vmlinuz; then
+        echo "Secure Boot signature check failed."
+        [[ -n "${temp_name:-}" ]] && ${PODMAN} rm -f "${temp_name}"
+        exit 1
+    fi
+    [[ -n "${temp_name:-}" ]] && ${PODMAN} rm -f "${temp_name}"
+    echo "Secure Boot signature check passed."
+
+# Generate SBOM
+[group('Utility')]
+gen-sbom $target_image=image_name $tag=default_tag:
+    #!/usr/bin/env bash
+    set -eoux pipefail
+    OUT_DIR="sbom_out/${target_image##*/}"
+    mkdir -p "${OUT_DIR}"
+    ${PODMAN} container create --replace --name "${target_image##*/}" "${target_image}:${tag}"
+    ROOTFS="${OUT_DIR}/rootfs"
+    mkdir -p "${ROOTFS}"
+    ${PODMAN} export "${target_image##*/}" | tar -C "${ROOTFS}" -xf -
+    ${PODMAN} container rm "${target_image##*/}"
+    if command -v syft >/dev/null 2>&1; then
+        syft --source-name "${target_image}:${tag}" "${OUT_DIR}" -o "syft-json=${OUT_DIR}/sbom.json"
+    else
+        echo "syft not found; rootfs exported to ${ROOTFS}"
+    fi
+    rm -rf "${ROOTFS}"
