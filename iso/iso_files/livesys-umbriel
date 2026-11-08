@@ -5,6 +5,15 @@
 
 UMBRIEL_SESSION_FILE="umbriel.desktop"
 
+# Ensure the liveuser account exists and is usable for autologin.
+if ! id liveuser >/dev/null 2>&1; then
+    useradd -m -s /usr/bin/zsh liveuser 2>/dev/null || true
+fi
+chsh -s /usr/bin/zsh liveuser 2>/dev/null || true
+passwd -d liveuser 2>/dev/null || true
+mkdir -p /home/liveuser
+chown -R liveuser:liveuser /home/liveuser 2>/dev/null || true
+
 # set up autologin for user liveuser via greetd
 # Only append a new initial_session block; do not modify the default greeter session.
 if [ -f /etc/greetd/config.toml ]; then
@@ -16,6 +25,7 @@ command = "start-umbriel"
 user = "liveuser"
 GREETD_EOF
     fi
+    systemctl try-restart greetd.service 2>/dev/null || true
 fi
 
 # Show harddisk install on the desktop
