@@ -40,7 +40,6 @@ sed -i 's|^store-root=.*|store-root=/dev/shm/selinux|' /etc/selinux/semanage.con
 /ctx/build_files/base/04-users.sh
 /ctx/build_files/base/05-greeter.sh
 /ctx/build_files/base/06-cleanup.sh
-/ctx/build_files/base/07-anaconda.sh
 /ctx/build_files/base/19-initramfs.sh
 /ctx/build_files/base/20-tests.sh
 
