@@ -370,16 +370,12 @@ build-qcow2 $target_image=("localhost/" + image_name) $tag=default_tag: && (_bui
 [group('Build Virtal Machine Image')]
 build-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_build-bib target_image tag "raw" "disk_config/disk.toml")
 
-# Build an ISO virtual machine image (generic installer, text-based)
+# Build a LIVE ISO with the Anaconda WebUI using Titanoboa (builds installer image first)
 [group('Build Virtal Machine Image')]
-build-iso $target_image=("localhost/" + image_name) $tag=default_tag: && (_build-bib target_image tag "iso" "disk_config/iso.toml")
-
-# Build a LIVE ISO with the Anaconda WebUI (builds installer image first)
-[group('Build Virtal Machine Image')]
-build-live-iso $target_image=("localhost/" + image_name) $tag=default_tag:
+build-iso $target_image=("localhost/" + image_name) $tag=default_tag:
     just build ${target_image} ${tag}
     podman build -f iso/Containerfile --build-arg BASE_IMAGE=${target_image}:${tag} -t ${target_image}-installer:${tag} .
-    just _build-bib ${target_image}-installer ${tag} "iso" "disk_config/iso.toml"
+    TITANOBOA_CTR_IMAGE=${target_image}-installer:${tag} TITANOBOA_OUTPUT_DIR=./output ./iso/titanoboa/main.sh
 
 # Rebuild a QCOW2 virtual machine image
 [group('Build Virtal Machine Image')]
@@ -391,7 +387,8 @@ rebuild-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_reb
 
 # Rebuild an ISO virtual machine image
 [group('Build Virtal Machine Image')]
-rebuild-iso $target_image=("localhost/" + image_name) $tag=default_tag: && (_rebuild-bib target_image tag "iso" "disk_config/iso.toml")
+rebuild-iso $target_image=("localhost/" + image_name) $tag=default_tag: (build target_image tag)
+    just build-iso ${target_image} ${tag}
 
 # Run a virtual machine with the specified image type and configuration
 _run-vm $target_image $tag $type $config:
@@ -443,13 +440,25 @@ run-vm-qcow2 $target_image=("localhost/" + image_name) $tag=default_tag: && (_ru
 [group('Run Virtal Machine')]
 run-vm-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_run-vm target_image tag "raw" "disk_config/disk.toml")
 
-# Run a virtual machine from an ISO
+# Run a virtual machine from an ISO (live WebUI)
 [group('Run Virtal Machine')]
-run-vm-iso $target_image=("localhost/" + image_name) $tag=default_tag: && (_run-vm target_image tag "iso" "disk_config/iso.toml")
+run-vm-iso $target_image=("localhost/" + image_name) $tag=default_tag:
+    #!/usr/bin/env bash
+    set -eoux pipefail
+    image_file="output/Manganite-Live.iso"
+    if [[ ! -f "${image_file}" ]]; then
+        just build-iso ${target_image} ${tag}
+    fi
+    port=8006
+    while grep -q :${port} <<< $(ss -tunalp); do port=$(( port + 1 )); done
+    echo "Using Port: ${port}"
+    podman run --rm --privileged --pull=newer --publish "127.0.0.1:${port}:8006" \
+        --env "CPU_CORES=4" --env "RAM_SIZE=8G" --env "DISK_SIZE=64G" \
+        --env "TPM=Y" --env "GPU=Y" --device=/dev/kvm \
+        --volume "${PWD}/${image_file}":"/boot.iso":Z \
+        docker.io/qemux/qemu
 
-# Run a virtual machine from a LIVE ISO (WebUI)
-[group('Run Virtal Machine')]
-run-vm-live-iso $target_image=("localhost/" + image_name) $tag=default_tag: && (_run-vm target_image-installer tag "iso" "disk_config/iso.toml")
+
 
 # Run a virtual machine using systemd-vmspawn
 [group('Run Virtal Machine')]
