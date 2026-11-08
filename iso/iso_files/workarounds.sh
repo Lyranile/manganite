@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 set -exo pipefail
 
-# Live ISO workarounds for Manganite
+# Live ISO environment configuration for Manganite
 
 # Disable services that should not run in the live environment
 for s in \
@@ -15,3 +15,6 @@ done
 # Ensure liveuser home exists
 mkdir -p /home/liveuser
 chown liveuser:liveuser /home/liveuser 2>/dev/null || true
+
+# Live ISO must boot into the graphical session, not the anaconda installer target.
+ln -sf /usr/lib/systemd/system/graphical.target /etc/systemd/system/default.target

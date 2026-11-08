@@ -370,9 +370,16 @@ build-qcow2 $target_image=("localhost/" + image_name) $tag=default_tag: && (_bui
 [group('Build Virtal Machine Image')]
 build-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_build-bib target_image tag "raw" "disk_config/disk.toml")
 
-# Build an ISO virtual machine image
+# Build an ISO virtual machine image (generic installer, text-based)
 [group('Build Virtal Machine Image')]
 build-iso $target_image=("localhost/" + image_name) $tag=default_tag: && (_build-bib target_image tag "iso" "disk_config/iso.toml")
+
+# Build a LIVE ISO with the Anaconda WebUI (builds installer image first)
+[group('Build Virtal Machine Image')]
+build-live-iso $target_image=("localhost/" + image_name) $tag=default_tag:
+    just build ${target_image} ${tag}
+    podman build -f iso/Containerfile --build-arg BASE_IMAGE=${target_image}:${tag} -t ${target_image}-installer:${tag} .
+    just _build-bib ${target_image}-installer ${tag} "iso" "disk_config/iso.toml"
 
 # Rebuild a QCOW2 virtual machine image
 [group('Build Virtal Machine Image')]
@@ -439,6 +446,10 @@ run-vm-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_run-
 # Run a virtual machine from an ISO
 [group('Run Virtal Machine')]
 run-vm-iso $target_image=("localhost/" + image_name) $tag=default_tag: && (_run-vm target_image tag "iso" "disk_config/iso.toml")
+
+# Run a virtual machine from a LIVE ISO (WebUI)
+[group('Run Virtal Machine')]
+run-vm-live-iso $target_image=("localhost/" + image_name) $tag=default_tag: && (_run-vm target_image-installer tag "iso" "disk_config/iso.toml")
 
 # Run a virtual machine using systemd-vmspawn
 [group('Run Virtal Machine')]

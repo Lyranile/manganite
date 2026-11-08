@@ -16,6 +16,24 @@ for repo in ${ENABLE_REPOS}; do
 	dnf5 config-manager setopt "${repo}.enabled=1"
 done
 
+# SELinux policy store is moved to tmpfs (/dev/shm) for the duration of the
+# build. libsemanage commits modules by renaming directories, which fails on
+# overlayfs when a file descriptor is held open (EXDEV/ENOTEMPTY). A tmpfs
+# store avoids this; it is copied back to /etc/selinux at the end.
+restore_selinux_store() {
+	if [ -d /dev/shm/selinux/targeted ]; then
+		rm -rf /etc/selinux/targeted
+		cp -a /dev/shm/selinux/targeted /etc/selinux/targeted
+		sed -i 's|^store-root=.*|store-root=/etc/selinux|' /etc/selinux/semanage.conf
+		rm -rf /dev/shm/selinux
+	fi
+}
+trap restore_selinux_store EXIT
+
+mkdir -p /dev/shm/selinux
+cp -a /etc/selinux/targeted /dev/shm/selinux/targeted
+sed -i 's|^store-root=.*|store-root=/dev/shm/selinux|' /etc/selinux/semanage.conf
+
 /ctx/build_files/base/01-nvidia.sh
 /ctx/build_files/base/02-services.sh
 /ctx/build_files/base/03-packages.sh

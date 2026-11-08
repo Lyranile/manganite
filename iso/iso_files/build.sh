@@ -12,6 +12,20 @@ mkdir -p "$(realpath /root)"
 # bwrap tries to write /proc/sys/user/max_user_namespaces which is mounted as ro
 mount -o remount,rw /proc/sys
 
+# Stage the SELinux policy store on tmpfs
+restore_selinux_store() {
+	if [ -d /dev/shm/selinux/targeted ]; then
+		rm -rf /etc/selinux/targeted
+		cp -a /dev/shm/selinux/targeted /etc/selinux/targeted
+		sed -i 's|^store-root=.*|store-root=/etc/selinux|' /etc/selinux/semanage.conf
+		rm -rf /dev/shm/selinux
+	fi
+}
+trap restore_selinux_store EXIT
+mkdir -p /dev/shm/selinux
+cp -a /etc/selinux/targeted /dev/shm/selinux/targeted
+sed -i 's|^store-root=.*|store-root=/dev/shm/selinux|' /etc/selinux/semanage.conf
+
 # Install flatpaks if list exists
 if [[ -f "$SCRIPT_DIR/flatpaks.list" ]]; then
     echo "Installing flatpaks..."
@@ -64,10 +78,11 @@ systemctl enable livesys.service livesys-late.service
 # Install the Umbriel livesys script
 install -m 0755 "$SCRIPT_DIR/livesys-umbriel" /usr/libexec/livesys/sessions.d/livesys-umbriel
 
-# Run configure hooks
+# Run the configure/postrootfs hook
 export BASE_IMAGE="${BASE_IMAGE:-}"
-bash "$SCRIPT_DIR/configure_iso_anaconda.sh" || true
-bash "$SCRIPT_DIR/workarounds.sh" || true
+bash "$SCRIPT_DIR/workarounds.sh" && \
+bash "$SCRIPT_DIR/configure_iso_anaconda.sh" && \
+bash "$SCRIPT_DIR/smoke-tests.sh"
 
 # image-builder needs gcdx64.efi / grub modules
 _arch=$(uname -m)
