@@ -12,6 +12,9 @@ mkdir -p "$(realpath /root)"
 # bwrap tries to write /proc/sys/user/max_user_namespaces which is mounted as ro
 mount -o remount,rw /proc/sys
 
+# /var is a tmpfs mount during build; ensure required dirs exist
+mkdir -p /var/tmp /var/cache /var/lib /var/roothome
+
 # Stage the SELinux policy store on tmpfs
 restore_selinux_store() {
 	if [ -d /dev/shm/selinux/targeted ]; then
@@ -30,12 +33,14 @@ sed -i 's|^store-root=.*|store-root=/dev/shm/selinux|' /etc/selinux/semanage.con
 if [[ -f "$SCRIPT_DIR/flatpaks.list" ]]; then
     echo "Installing flatpaks..."
     curl --retry 3 -Lo /etc/flatpak/remotes.d/flathub.flatpakrepo https://dl.flathub.org/repo/flathub.flatpakrepo
-    xargs -r flatpak install -y --noninteractive < "$SCRIPT_DIR/flatpaks.list" || true
+    grep -v '^#' "$SCRIPT_DIR/flatpaks.list" | grep -v '^$' | xargs -r flatpak install -y --noninteractive || true
 fi
 
 # Pull the container image to be installed
 if [[ -n "${BASE_IMAGE:-}" ]]; then
-    podman pull "${BASE_IMAGE}"
+    if ! podman image exists "${BASE_IMAGE}" 2>/dev/null; then
+        podman pull "${BASE_IMAGE}"
+    fi
 else
     IMAGE_INFO="$(cat /usr/share/ublue-os/image-info.json)"
     IMAGE_TAG="$(jq -c -r '."image-tag"' <<<"$IMAGE_INFO")"
