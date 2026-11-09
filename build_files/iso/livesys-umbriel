@@ -1,0 +1,40 @@
+#!/usr/bin/sh
+#
+# live-umbriel: Umbriel-specific setup for livesys
+#
+
+UMBRIEL_SESSION_FILE="umbriel.desktop"
+
+# Ensure the liveuser account exists and is usable for autologin.
+if ! id liveuser >/dev/null 2>&1; then
+    useradd -m -s /usr/bin/zsh liveuser 2>/dev/null || true
+fi
+chsh -s /usr/bin/zsh liveuser 2>/dev/null || true
+passwd -d liveuser 2>/dev/null || true
+mkdir -p /home/liveuser
+chown -R liveuser:liveuser /home/liveuser 2>/dev/null || true
+
+# Show harddisk install on the desktop
+sed -i -e 's/NoDisplay=true/NoDisplay=false/' /usr/share/applications/liveinst.desktop 2>/dev/null || true
+mkdir -p /home/liveuser/Desktop
+
+# Autostart the installer in the live session
+mkdir -p /home/liveuser/.config/autostart
+if [ -f /src/build_files/iso/templates/liveinst.desktop ]; then
+    install -Dm644 /src/build_files/iso/templates/liveinst.desktop /home/liveuser/.config/autostart/liveinst.desktop
+fi
+chown -R liveuser:liveuser /home/liveuser/.config 2>/dev/null || true
+
+# echoing type liveinst to start the installer
+echo "echo 'Please type liveinst and press Enter to start the installer'" >> /home/liveuser/.bashrc 2>/dev/null || true
+
+# Use Umbriel configuration files for live environment if present
+if [ -d /usr/share/umbriel/config.live.d ]; then
+    mkdir -p /home/liveuser/.config/umbriel/
+    cp -a /usr/share/umbriel/config.live.d/. /home/liveuser/.config/umbriel/ 2>/dev/null || true
+fi
+
+# Autostart the installer via Umbriel's native autostart
+mkdir -p /home/liveuser/.config/umbriel
+install -Dm644 /src/build_files/iso/templates/umbriel-overrides.toml /home/liveuser/.config/umbriel/overrides.toml
+chown -R liveuser:liveuser /home/liveuser/.config 2>/dev/null || true

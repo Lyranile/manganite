@@ -5,26 +5,17 @@ echo "::group:: ===$(basename "$0")==="
 set -eoux pipefail
 
 dnf5 -y install \
-	anaconda \
-	anaconda-dracut \
-	anaconda-install-img-deps \
-	anaconda-webui \
+	adw-gtk3-theme \
 	bibata-cursor-theme \
 	dracut-config-generic \
-	dracut-live \
-	dracut-network \
 	file-roller-nautilus \
-	gcc \
 	ghostty \
 	ghostty-nautilus \
 	git \
 	greetd \
-	grub2-efi-x64-cdboot \
 	i2c-tools \
-	isomd5sum \
 	nautilus \
 	nautilus-extensions \
-	net-tools \
 	noctalia \
 	noctalia-greeter \
 	os-prober \
@@ -33,13 +24,10 @@ dnf5 -y install \
 	plymouth \
 	podman \
 	polkit \
-	squashfs-tools \
-	shim \
-	slitherer \
+	qt6ct \
 	sushi \
 	umbriel-nightly \
 	xdg-desktop-portal-umbriel-nightly \
-	xorriso \
 	zsh
 
 mkdir -p /boot/efi

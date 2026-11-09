@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 
@@ -9,6 +9,8 @@ IMPORTANT_PACKAGES=(
 	greetd
 	noctalia
 	noctalia-greeter
+	adw-gtk3-theme
+	qt6ct
 	umbriel-nightly
 	xdg-desktop-portal-umbriel-nightly
 	ghostty
@@ -23,3 +25,10 @@ for package in "${IMPORTANT_PACKAGES[@]}"; do
 done
 
 echo "All required packages present."
+
+test -f /etc/greetd/config.toml
+test -f /var/lib/noctalia-greeter/greeter.toml
+test -f /etc/skel/.profile
+test -f /etc/skel/.zshrc
+
+echo "All main image smoke tests passed."

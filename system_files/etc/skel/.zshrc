@@ -19,11 +19,14 @@ setopt PUSHD_IGNORE_DUPS
 setopt CORRECT
 
 # Zinit
-ZINIT_HOME="/home/linuxbrew/.linuxbrew/opt/zinit"
+BREW_PREFIX="${BREW_PREFIX:-/home/linuxbrew/.linuxbrew}"
+QT_QPA_PLATFORMTHEME="${QT_QPA_PLATFORMTHEME:-qt6ct}"
+export QT_QPA_PLATFORMTHEME
+ZINIT_HOME="${BREW_PREFIX}/opt/zinit"
 if [ -f "$ZINIT_HOME/zinit.zsh" ]; then
   source "$ZINIT_HOME/zinit.zsh"
 
-  # Oh My Zsh Plugins
+  # Oh My Zsh
   zinit wait lucid for \
     OMZL::completion.zsh \
     OMZL::directories.zsh \
@@ -38,37 +41,37 @@ if [ -f "$ZINIT_HOME/zinit.zsh" ]; then
     OMZP::command-not-found \
     OMZP::sudo
 
-  # Command Completions
+  # Command completions
   zinit ice wait lucid blockf
   zinit light zsh-users/zsh-completions
 
-  # Command Autosuggestions
+  # Command autosuggestions
   zinit ice wait lucid atload'_zsh_autosuggest_start'
   zinit light zsh-users/zsh-autosuggestions
 
-  # Substring Search
+  # Substring search
   zinit ice wait lucid atload'bindkey "^[[A" history-substring-search-up; bindkey "^[[B" history-substring-search-down'
   zinit light zsh-users/zsh-history-substring-search
 
-  # Syntax Highlighting
+  # Syntax highlighting
   zinit ice wait lucid
   zinit light zdharma-continuum/fast-syntax-highlighting
 
-  # Bracket Closing
+  # Bracket closing
   zinit ice wait lucid
   zinit light hlissner/zsh-autopair
 
-  # Aliased Commands
+  # Aliased commands
   zinit ice wait lucid
   zinit light MichaelAquilina/zsh-you-should-use
 
-  # Shift Selection
+  # Shift selection
   zinit ice wait lucid
   zinit light jirutka/zsh-shift-select
 fi
 
 fpath+="$HOME/.zfunc"
-fpath+=(/home/linuxbrew/.linuxbrew/share/zsh/site-functions)
+fpath+=("${BREW_PREFIX}/share/zsh/site-functions")
 
 # Completion styles
 zstyle ':completion:*' menu select
@@ -110,11 +113,15 @@ bindkey "\e[F" end-of-line
 bindkey "^I" menu-complete
 bindkey "\e[Z" reverse-menu-complete
 
-# Profile Loading
-source "$HOME/.profile"
-fpath+=~/.zfunc
-
-# Compute Initialization (after profile so fpath/LS_COLORS are final)
+# Compute initializationa
+fpath+=(~/.zfunc)
 autoload -Uz compinit
 mkdir -p "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
+compinit
+
+# Profile loading
+source "$HOME/.profile"
+
+# Reinitialize completions
+autoload -Uz compinit
 compinit
