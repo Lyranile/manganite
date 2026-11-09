@@ -20,6 +20,8 @@ setopt CORRECT
 
 # Zinit
 BREW_PREFIX="${BREW_PREFIX:-/home/linuxbrew/.linuxbrew}"
+QT_QPA_PLATFORMTHEME="${QT_QPA_PLATFORMTHEME:-qt6ct}"
+export QT_QPA_PLATFORMTHEME
 ZINIT_HOME="${BREW_PREFIX}/opt/zinit"
 if [ -f "$ZINIT_HOME/zinit.zsh" ]; then
   source "$ZINIT_HOME/zinit.zsh"

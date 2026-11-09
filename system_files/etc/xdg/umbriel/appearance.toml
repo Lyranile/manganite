@@ -8,9 +8,13 @@ radius = 3
 [appearance.title_bar]
 mode = "forced"  # Always show title bars with buttons.
 # Use "forced" to always show bars, or "off" to hide them. Window rules can override this.
-height = 28
-font = "sans 10"
+height = 48
+font = "sans 12"
 button_position = "right"  # or "left"
+buttons = ["minimize", "maximize", "close"]  # From the title outward; omit to hide.
+button_size = 24
+button_gap = 10
+button_padding = 12
 
 # Choose the background color shown if the lock screen takes too long to appear.
 # [colors]

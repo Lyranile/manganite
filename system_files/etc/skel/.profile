@@ -1,5 +1,6 @@
 # Path arguments
 export BREW_PREFIX="${BREW_PREFIX:-/home/linuxbrew/.linuxbrew}"
+export QT_QPA_PLATFORMTHEME="${QT_QPA_PLATFORMTHEME:-qt6ct}"
 export PATH="$HOME/.local/bin:$HOME/bin:/usr/bin:/run/host/usr/bin"
 export XDG_CONFIG_HOME="$HOME/.config"
 

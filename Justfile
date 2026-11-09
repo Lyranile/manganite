@@ -1,22 +1,22 @@
 set dotenv-filename := "image-template.env"
 set dotenv-load
 
-export image_name := env_var("IMAGE_NAME")
-export repo_organization := env_var("REPO_ORGANIZATION")
-export image_desc := env_var("IMAGE_DESC")
-export image_keywords := env_var("IMAGE_KEYWORDS")
-export image_logo_url := env_var("IMAGE_LOGO_URL")
-export default_tag := env_var("DEFAULT_TAG")
-export bib_image := env_var("BIB_IMAGE")
+export image_name := env("IMAGE_NAME")
+export repo_organization := env("REPO_ORGANIZATION")
+export image_desc := env("IMAGE_DESC")
+export image_keywords := env("IMAGE_KEYWORDS")
+export image_logo_url := env("IMAGE_LOGO_URL")
+export default_tag := env("DEFAULT_TAG")
+export bib_image := env("BIB_IMAGE")
 
 export PODMAN := "podman"
 export BUILDAH := "buildah"
-
-# Paths
-build_dir := "build_files"
-iso_scripts := build_dir + "/iso"
-iso_containerfile := "iso/Containerfile"
 export SUDOIF := if `id -u` == "0" { "" } else { "sudo" }
+
+iso_containerfile := "iso/Containerfile"
+
+# Container storage location for bind-mounting into the ISO build container.
+containers_storage := if `id -u` == "0" { "/var/lib/containers/storage" } else { env("HOME") + "/.local/share/containers/storage" }
 
 alias build-vm := build-qcow2
 alias rebuild-vm := rebuild-qcow2
@@ -352,6 +352,7 @@ _build-bib $target_image $tag $type $config: (_rootful_load_image target_image t
         "${target_image}:${tag}"
     fi
 
+    rm -rf output
     mkdir -p output
     sudo mv -f $BUILDTMP/* output/
     sudo rmdir $BUILDTMP
@@ -379,7 +380,7 @@ build-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_build
 [group('Build Virtal Machine Image')]
 build-iso $target_image=("localhost/" + image_name) $tag=default_tag:
     just build ${target_image} ${tag}
-    podman build --cap-add sys_admin --security-opt label=disable -f ${iso_containerfile} --build-arg BASE_IMAGE=${target_image}:${tag} -t ${target_image}-installer:${tag} .
+    podman build --cap-add sys_admin --security-opt label=disable --build-context containers-storage={{ containers_storage }} -f {{ iso_containerfile }} --build-arg BASE_IMAGE=${target_image}:${tag} -t ${target_image}-installer:${tag} .
     TITANOBOA_CTR_IMAGE=${target_image}-installer:${tag} TITANOBOA_OUTPUT_DIR=./output ./iso/titanoboa/main.sh
 
 # Rebuild a QCOW2 virtual machine image
@@ -462,8 +463,6 @@ run-vm-iso $target_image=("localhost/" + image_name) $tag=default_tag:
         --env "TPM=Y" --env "GPU=Y" --device=/dev/kvm \
         --volume "${PWD}/${image_file}":"/boot.iso":Z \
         docker.io/qemux/qemu
-
-
 
 # Run a virtual machine using systemd-vmspawn
 [group('Run Virtal Machine')]

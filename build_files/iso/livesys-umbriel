@@ -33,3 +33,11 @@ if [ -d /usr/share/umbriel/config.live.d ]; then
     mkdir -p /home/liveuser/.config/umbriel/
     cp -a /usr/share/umbriel/config.live.d/. /home/liveuser/.config/umbriel/ 2>/dev/null || true
 fi
+
+# Autostart the installer via Umbriel's native autostart (overrides take precedence)
+mkdir -p /home/liveuser/.config/umbriel
+cat > /home/liveuser/.config/umbriel/overrides.toml <<'EOF'
+[general]
+autostart = ["noctalia", "liveinst"]
+EOF
+chown -R liveuser:liveuser /home/liveuser/.config 2>/dev/null || true

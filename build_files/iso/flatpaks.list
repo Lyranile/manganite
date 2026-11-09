@@ -1,3 +1,1 @@
-# Add Flatpak refs here, one per line, if desired for the live ISO.
-# Example:
-# app.zen_browser.zen/x86_64/stable
+# (empty - GTK themes are preinstalled in the main image)

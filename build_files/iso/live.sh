@@ -4,23 +4,24 @@ set -exo pipefail
 # Live ISO environment configuration for Manganite
 
 # Disable services that should not run in the live environment
-for s in \
-    rpm-ostreed-automatic.timer \
-    flatpak-system-update.timer \
-    flatpak-user-update.timer \
-    brew-bundle.service; do
-    systemctl disable "$s" 2>/dev/null || true
+for service in \
+	rpm-ostreed-automatic.timer \
+	flatpak-system-update.timer \
+	flatpak-user-update.timer \
+	brew-bundle.service; do
+	systemctl disable "$service" 2>/dev/null || true
 done
 
 # Ensure liveuser exists for autologin
 if ! id liveuser >/dev/null 2>&1; then
-    useradd -m -s /usr/bin/zsh liveuser 2>/dev/null || true
+	useradd -m -s /usr/bin/zsh liveuser 2>/dev/null || true
 fi
+echo 'liveuser:live' | chpasswd 2>/dev/null || true
 chown -R liveuser:liveuser /home/liveuser 2>/dev/null || true
 
 # Use the dedicated live greeter config (with autologin)
 if [ -f /src/build_files/iso/greetd-live.toml ]; then
-    install -Dm644 /src/build_files/iso/greetd-live.toml /etc/greetd/config.toml
+	install -Dm644 /src/build_files/iso/greetd-live.toml /etc/greetd/config.toml
 fi
 
 # Live ISO must boot into the graphical session, not the anaconda installer target.

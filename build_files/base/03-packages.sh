@@ -5,6 +5,7 @@ echo "::group:: ===$(basename "$0")==="
 set -eoux pipefail
 
 dnf5 -y install \
+	adw-gtk3-theme \
 	bibata-cursor-theme \
 	dracut-config-generic \
 	file-roller-nautilus \
@@ -23,6 +24,7 @@ dnf5 -y install \
 	plymouth \
 	podman \
 	polkit \
+	qt6ct \
 	sushi \
 	umbriel-nightly \
 	xdg-desktop-portal-umbriel-nightly \
