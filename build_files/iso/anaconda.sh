@@ -23,18 +23,12 @@ install -Dm644 "${TEMPLATE_DIR}/profile.conf" "${PROFILE_DIR}/manganite.conf"
 
 # Interactive Kickstart: install the bootc container image
 mkdir -p "${ANACONDA_DIR}" "${POST_DIR}"
-cat >"${ANACONDA_DIR}/interactive-defaults.ks" <<EOF
-ostreecontainer --url=${IMAGE_REF}:${IMAGE_TAG} --transport=containers-storage --no-signature-verification
-%include ${ANACONDA_DIR}/post-scripts/install-configure-upgrade.ks
-%include ${ANACONDA_DIR}/post-scripts/install-flatpaks.ks
-EOF
+sed -e "s|\${IMAGE_REF}|${IMAGE_REF}|g" -e "s|\${IMAGE_TAG}|${IMAGE_TAG}|g" \
+    "${TEMPLATE_DIR}/interactive-defaults.ks.tmpl" > "${ANACONDA_DIR}/interactive-defaults.ks"
 
 # Post-install: switch to the published image
-cat >"${POST_DIR}/install-configure-upgrade.ks" <<EOF
-%post --erroronfail
-bootc switch --mutate-in-place --enforce-container-sigpolicy --transport registry ${IMAGE_REF}:${IMAGE_TAG}
-%end
-EOF
+sed -e "s|\${IMAGE_REF}|${IMAGE_REF}|g" -e "s|\${IMAGE_TAG}|${IMAGE_TAG}|g" \
+    "${TEMPLATE_DIR}/install-configure-upgrade.ks.tmpl" > "${POST_DIR}/install-configure-upgrade.ks"
 
 # Post-install: copy flatpaks into the deployed system
 install -Dm644 "${TEMPLATE_DIR}/install-flatpaks.ks" "${POST_DIR}/install-flatpaks.ks"

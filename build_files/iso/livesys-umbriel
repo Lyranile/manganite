@@ -18,7 +18,7 @@ chown -R liveuser:liveuser /home/liveuser 2>/dev/null || true
 sed -i -e 's/NoDisplay=true/NoDisplay=false/' /usr/share/applications/liveinst.desktop 2>/dev/null || true
 mkdir -p /home/liveuser/Desktop
 
-# Autostart the installer in the live session (uses the Anaconda WebUI when available)
+# Autostart the installer in the live session
 mkdir -p /home/liveuser/.config/autostart
 if [ -f /src/build_files/iso/templates/liveinst.desktop ]; then
     install -Dm644 /src/build_files/iso/templates/liveinst.desktop /home/liveuser/.config/autostart/liveinst.desktop
@@ -34,10 +34,7 @@ if [ -d /usr/share/umbriel/config.live.d ]; then
     cp -a /usr/share/umbriel/config.live.d/. /home/liveuser/.config/umbriel/ 2>/dev/null || true
 fi
 
-# Autostart the installer via Umbriel's native autostart (overrides take precedence)
+# Autostart the installer via Umbriel's native autostart
 mkdir -p /home/liveuser/.config/umbriel
-cat > /home/liveuser/.config/umbriel/overrides.toml <<'EOF'
-[general]
-autostart = ["noctalia", "liveinst"]
-EOF
+install -Dm644 /src/build_files/iso/templates/umbriel-overrides.toml /home/liveuser/.config/umbriel/overrides.toml
 chown -R liveuser:liveuser /home/liveuser/.config 2>/dev/null || true

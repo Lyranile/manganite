@@ -12,10 +12,4 @@ if [ -f /etc/default/useradd ]; then
 	grep -q '^SHELL=' /etc/default/useradd || echo 'SHELL=/usr/bin/zsh' >>/etc/default/useradd
 fi
 
-# Test user for QCOW2 testing (remove for production)
-if ! id testuser >/dev/null 2>&1; then
-    useradd -m -s /usr/bin/zsh testuser
-fi
-echo 'testuser:test' | chpasswd
-
 echo "::endgroup::"
