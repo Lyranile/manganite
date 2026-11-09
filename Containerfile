@@ -25,6 +25,7 @@ ENV NVIDIA_VARIANT=${NVIDIA_VARIANT}
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
   --mount=type=cache,dst=/var/cache \
+  --mount=type=tmpfs,dst=/var \
   --mount=type=tmpfs,dst=/var/log \
   --mount=type=tmpfs,dst=/tmp \
   --mount=type=bind,from=akmods,source=/kernel-rpms,target=/tmp/kernel-rpms \

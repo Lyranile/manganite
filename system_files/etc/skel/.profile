@@ -3,7 +3,9 @@ export PATH="$HOME/.local/bin:$HOME/bin:/usr/bin:/run/host/usr/bin"
 export XDG_CONFIG_HOME="$HOME/.config"
 
 # Brew config
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+if [ -r /home/linuxbrew/.linuxbrew/bin/brew ]; then
+	eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
 
 # Shell name
 SHELL=$(cat /proc/$$/comm)
