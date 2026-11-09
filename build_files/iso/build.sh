@@ -6,35 +6,8 @@ set -exo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Create the directory that /root is symlinked to
-mkdir -p "$(realpath /root)"
-
 # bwrap tries to write /proc/sys/user/max_user_namespaces which is mounted as ro
 mount -o remount,rw /proc/sys
-
-# /var is a tmpfs mount during build; ensure required dirs exist
-mkdir -p /var/tmp /var/cache /var/lib /var/roothome
-
-# Stage the SELinux policy store on tmpfs
-restore_selinux_store() {
-	if [ -d /dev/shm/selinux/targeted ]; then
-		rm -rf /etc/selinux/targeted
-		cp -a /dev/shm/selinux/targeted /etc/selinux/targeted
-		sed -i 's|^store-root=.*|store-root=/etc/selinux|' /etc/selinux/semanage.conf
-		rm -rf /dev/shm/selinux
-	fi
-}
-trap restore_selinux_store EXIT
-mkdir -p /dev/shm/selinux
-cp -a /etc/selinux/targeted /dev/shm/selinux/targeted
-sed -i 's|^store-root=.*|store-root=/dev/shm/selinux|' /etc/selinux/semanage.conf
-
-# Install flatpaks if list exists
-if [[ -f "$SCRIPT_DIR/flatpaks.list" ]]; then
-	echo "Installing flatpaks..."
-	curl --retry 3 -Lo /etc/flatpak/remotes.d/flathub.flatpakrepo https://dl.flathub.org/repo/flathub.flatpakrepo
-	grep -v '^#' "$SCRIPT_DIR/flatpaks.list" | grep -v '^$' | xargs -r flatpak install -y --noninteractive || true
-fi
 
 # Pull the container image to be installed
 if [[ -n "${BASE_IMAGE:-}" ]]; then
@@ -52,6 +25,7 @@ fi
 ANACONDA=(
 	anaconda-live
 	anaconda-webui
+	pykickstart
 )
 
 dnf5 install -y \

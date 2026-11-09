@@ -53,11 +53,8 @@ fix:
 clean:
     #!/usr/bin/env bash
     set -eoux pipefail
-    touch _build
-    find *_build* -exec rm -rf {} \;
-    rm -f previous.manifest.json
-    rm -f changelog.md
-    rm -f output.env
+    rm -rf _build* output sbom_out
+    rm -f previous.manifest.json changelog.md output.env /tmp/*-tags.json
     rm -rf output/
 
 # Sudo Clean Repo

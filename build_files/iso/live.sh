@@ -14,15 +14,13 @@ done
 
 # Ensure liveuser exists for autologin
 if ! id liveuser >/dev/null 2>&1; then
-	useradd -m -s /usr/bin/zsh liveuser 2>/dev/null || true
+	useradd -m -s /usr/bin/zsh liveuser
 fi
-echo 'liveuser:live' | chpasswd 2>/dev/null || true
-chown -R liveuser:liveuser /home/liveuser 2>/dev/null || true
+echo 'liveuser:live' | chpasswd
+chown -R liveuser:liveuser /home/liveuser
 
 # Use the dedicated live greeter config (with autologin)
-if [ -f /src/build_files/iso/greetd-live.toml ]; then
-	install -Dm644 /src/build_files/iso/greetd-live.toml /etc/greetd/config.toml
-fi
+install -Dm644 /src/build_files/iso/greetd-live.toml /etc/greetd/config.toml
 
 # Live ISO must boot into the graphical session, not the anaconda installer target.
 ln -sf /usr/lib/systemd/system/graphical.target /etc/systemd/system/default.target
