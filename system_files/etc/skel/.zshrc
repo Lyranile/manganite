@@ -18,7 +18,7 @@ setopt AUTO_PUSHD
 setopt PUSHD_IGNORE_DUPS
 setopt CORRECT
 
-# Zinit (optional; loaded only if installed via Homebrew)
+# Zinit
 ZINIT_HOME="/home/linuxbrew/.linuxbrew/opt/zinit"
 if [ -f "$ZINIT_HOME/zinit.zsh" ]; then
   source "$ZINIT_HOME/zinit.zsh"
