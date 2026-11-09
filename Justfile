@@ -11,6 +11,11 @@ export bib_image := env_var("BIB_IMAGE")
 
 export PODMAN := "podman"
 export BUILDAH := "buildah"
+
+# Paths
+build_dir := "build_files"
+iso_scripts := build_dir + "/iso"
+iso_containerfile := "iso/Containerfile"
 export SUDOIF := if `id -u` == "0" { "" } else { "sudo" }
 
 alias build-vm := build-qcow2
@@ -374,7 +379,7 @@ build-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_build
 [group('Build Virtal Machine Image')]
 build-iso $target_image=("localhost/" + image_name) $tag=default_tag:
     just build ${target_image} ${tag}
-    podman build -f iso/Containerfile --build-arg BASE_IMAGE=${target_image}:${tag} -t ${target_image}-installer:${tag} .
+    podman build --cap-add sys_admin --security-opt label=disable -f ${iso_containerfile} --build-arg BASE_IMAGE=${target_image}:${tag} -t ${target_image}-installer:${tag} .
     TITANOBOA_CTR_IMAGE=${target_image}-installer:${tag} TITANOBOA_OUTPUT_DIR=./output ./iso/titanoboa/main.sh
 
 # Rebuild a QCOW2 virtual machine image

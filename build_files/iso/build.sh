@@ -85,9 +85,9 @@ install -m 0755 "$SCRIPT_DIR/livesys-umbriel" /usr/libexec/livesys/sessions.d/li
 
 # Run the configure/postrootfs hook
 export BASE_IMAGE="${BASE_IMAGE:-}"
-bash "$SCRIPT_DIR/workarounds.sh" && \
-bash "$SCRIPT_DIR/configure_iso_anaconda.sh" && \
-bash "$SCRIPT_DIR/smoke-tests.sh"
+bash "$SCRIPT_DIR/live.sh" && \
+bash "$SCRIPT_DIR/anaconda.sh" && \
+bash "$SCRIPT_DIR/tests.sh"
 
 # image-builder needs gcdx64.efi / grub modules
 _arch=$(uname -m)
@@ -114,19 +114,7 @@ systemd-firstboot --timezone UTC
 
 # Mount a larger tmpfs to /var/tmp at boot time
 mkdir -p /var/tmp
-cat >/etc/systemd/system/var-tmp.mount <<'EOF'
-[Unit]
-Description=Larger tmpfs for /var/tmp on live system
-
-[Mount]
-What=tmpfs
-Where=/var/tmp
-Type=tmpfs
-Options=size=50%,nr_inodes=1m,x-systemd.graceful-option=usrquota
-
-[Install]
-WantedBy=local-fs.target
-EOF
+install -Dm644 "$SCRIPT_DIR/templates/var-tmp.mount" /etc/systemd/system/var-tmp.mount
 systemctl enable var-tmp.mount
 
 # Copy in the iso config for image-builder

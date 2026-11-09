@@ -3,7 +3,7 @@ ARG BASE_IMAGE=ghcr.io/lyranile/manganite:latest
 FROM ${BASE_IMAGE}
 ENV BASE_IMAGE=${BASE_IMAGE}
 
-COPY iso/iso_files/ /src/iso_files/
+COPY build_files/iso/ /src/build_files/iso/
 RUN --mount=type=cache,target=/var/cache/libdnf5,id=libdnf5 \
     --mount=type=tmpfs,dst=/var \
-    bash /src/iso_files/build.sh
+    bash /src/build_files/iso/build.sh

@@ -19,7 +19,8 @@ setopt PUSHD_IGNORE_DUPS
 setopt CORRECT
 
 # Zinit
-ZINIT_HOME="/home/linuxbrew/.linuxbrew/opt/zinit"
+BREW_PREFIX="${BREW_PREFIX:-/home/linuxbrew/.linuxbrew}"
+ZINIT_HOME="${BREW_PREFIX}/opt/zinit"
 if [ -f "$ZINIT_HOME/zinit.zsh" ]; then
   source "$ZINIT_HOME/zinit.zsh"
 
@@ -68,7 +69,7 @@ if [ -f "$ZINIT_HOME/zinit.zsh" ]; then
 fi
 
 fpath+="$HOME/.zfunc"
-fpath+=(/home/linuxbrew/.linuxbrew/share/zsh/site-functions)
+fpath+=("${BREW_PREFIX}/share/zsh/site-functions")
 
 # Completion styles
 zstyle ':completion:*' menu select

@@ -12,23 +12,15 @@ for s in \
     systemctl disable "$s" 2>/dev/null || true
 done
 
-# Ensure liveuser home exists
-mkdir -p /home/liveuser
+# Ensure liveuser exists for autologin
 if ! id liveuser >/dev/null 2>&1; then
     useradd -m -s /usr/bin/zsh liveuser 2>/dev/null || true
 fi
-passwd -d liveuser 2>/dev/null || true
 chown -R liveuser:liveuser /home/liveuser 2>/dev/null || true
 
-if [ -f /etc/greetd/config.toml ]; then
-    if ! grep -q '^\[initial_session\]' /etc/greetd/config.toml; then
-        cat >> /etc/greetd/config.toml <<'GREETD_EOF'
-
-[initial_session]
-command = "start-umbriel"
-user = "liveuser"
-GREETD_EOF
-    fi
+# Use the dedicated live greeter config (with autologin)
+if [ -f /src/build_files/iso/greetd-live.toml ]; then
+    install -Dm644 /src/build_files/iso/greetd-live.toml /etc/greetd/config.toml
 fi
 
 # Live ISO must boot into the graphical session, not the anaconda installer target.
