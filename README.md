@@ -1,20 +1,20 @@
 # Manganite
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Lyranile/manganite/main/system_files/usr/share/icons/hicolor/scalable/apps/manganite.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Lyranile/manganite/main/system_files/usr/share/icons/hicolor/scalable/apps/manganite.svg">
-  <img alt="Manganite" src="https://raw.githubusercontent.com/Lyranile/manganite/main/system_files/usr/share/icons/hicolor/scalable/apps/manganite.svg" width="128">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/lyranile/manganite/main/system_files/usr/share/icons/hicolor/scalable/apps/manganite.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/lyranile/manganite/main/system_files/usr/share/icons/hicolor/scalable/apps/manganite.svg">
+  <img alt="Manganite" src="https://raw.githubusercontent.com/lyranile/manganite/main/system_files/usr/share/icons/hicolor/scalable/apps/manganite.svg" width="128">
 </picture>
 
-[![Build](https://github.com/Lyranile/manganite/actions/workflows/build.yml/badge.svg)](https://github.com/Lyranile/manganite/actions/workflows/build.yml)
-[![Lint](https://github.com/Lyranile/manganite/actions/workflows/lint.yml/badge.svg)](https://github.com/Lyranile/manganite/actions/workflows/lint.yml)
+[![Build](https://github.com/lyranile/manganite/actions/workflows/build.yml/badge.svg)](https://github.com/lyranile/manganite/actions/workflows/build.yml)
+[![Lint](https://github.com/lyranile/manganite/actions/workflows/lint.yml/badge.svg)](https://github.com/lyranile/manganite/actions/workflows/lint.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
 **Manganite** is a minimal, cloud-native desktop operating system built on the [Universal Blue](https://universal-blue.org/) `base-main` image. It layers the [Umbriel](https://noctalia.dev/umbriel) Wayland compositor (nightly, from Terra) and the [Noctalia](https://noctalia.dev/) shell on top of a desktop-free Fedora base, giving you a tiling, keyboard-driven desktop with near-zero maintenance.
 
 🌐 **Packages:**
-- Base: [`ghcr.io/lyranile/manganite:latest`](https://github.com/Lyranile/manganite/pkgs/container/manganite)
-- Nvidia: [`ghcr.io/lyranile/manganite-nvidia:latest`](https://github.com/Lyranile/manganite-nvidia/pkgs/container/manganite-nvidia)
+- Base: [`ghcr.io/lyranile/manganite:latest`](https://github.com/lyranile/manganite/pkgs/container/manganite)
+- Nvidia: [`ghcr.io/lyranile/manganite-nvidia:latest`](https://github.com/lyranile/manganite-nvidia/pkgs/container/manganite-nvidia)
 
 ## Mission
 
@@ -140,7 +140,7 @@ sudo just build   # rootful, for rebasing locally
 ## Communications
 
 - **📰 Blog** — Coming soon
-- **💬 Discussions** — [GitHub Discussions](https://github.com/Lyranile/manganite/discussions) (strongly recommended!)
+- **💬 Discussions** — [GitHub Discussions](https://github.com/lyranile/manganite/discussions) (strongly recommended!)
 - **📖 Documentation** — [docs](./docs/) / [README](./README.md)
 - **🔧 Contributing Guide** — [Contributing](#contributing)
 
@@ -149,7 +149,7 @@ sudo just build   # rootful, for rebasing locally
 - [Universal Blue Forums](https://universal-blue.discourse.group/)
 - [Universal Blue Discord](https://discord.gg/8RZGC3uFzA)
 - [bootc discussion forums](https://github.com/bootc-dev/bootc/discussions)
-- Issues: <https://github.com/Lyranile/manganite/issues>
+- Issues: <https://github.com/lyranile/manganite/issues>
 
 ## Code of Conduct
 
@@ -181,11 +181,11 @@ All incorporated components maintain their respective licenses and attributions.
 
 ## Star History
 
-<a href="https://star-history.com/#Lyranile/manganite&Date">
+<a href="https://star-history.com/#lyranile/manganite&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Lyranile/manganite&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Lyranile/manganite&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Lyranile/manganite&type=Date" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=lyranile/manganite&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=lyranile/manganite&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=lyranile/manganite&type=Date" />
   </picture>
 </a>
 
