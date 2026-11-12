@@ -1,0 +1,11 @@
+# run with --cap-add sys_admin --security-opt label=disable --squash
+ARG BASE_IMAGE=ghcr.io/lyranile/manganite:latest
+FROM ${BASE_IMAGE}
+ARG BASE_IMAGE
+ENV BASE_IMAGE=${BASE_IMAGE}
+
+COPY build_files/iso/ /src/build_files/iso/
+RUN --mount=type=cache,target=/var/cache/libdnf5,id=libdnf5 \
+    --mount=type=tmpfs,dst=/var \
+    --mount=type=bind,from=containers-storage,source=.,target=/var/lib/containers/storage,rw \
+    bash /src/build_files/iso/build.sh

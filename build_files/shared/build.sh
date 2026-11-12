@@ -19,10 +19,12 @@ done
 /ctx/build_files/base/01-nvidia.sh
 /ctx/build_files/base/02-services.sh
 /ctx/build_files/base/03-packages.sh
+
+rsync -rvKl --chown=0:0 /ctx/system_files/. /
+
 /ctx/build_files/base/04-users.sh
 /ctx/build_files/base/05-greeter.sh
 /ctx/build_files/base/06-cleanup.sh
-/ctx/build_files/base/07-anaconda.sh
 /ctx/build_files/base/19-initramfs.sh
 /ctx/build_files/base/20-tests.sh
 

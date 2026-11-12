@@ -1,9 +1,13 @@
 # Path arguments
+export BREW_PREFIX="${BREW_PREFIX:-/home/linuxbrew/.linuxbrew}"
+export QT_QPA_PLATFORMTHEME="${QT_QPA_PLATFORMTHEME:-qt6ct}"
 export PATH="$HOME/.local/bin:$HOME/bin:/usr/bin:/run/host/usr/bin"
 export XDG_CONFIG_HOME="$HOME/.config"
 
 # Brew config
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+if [ -r "${BREW_PREFIX}/bin/brew" ]; then
+	eval "$("${BREW_PREFIX}/bin/brew" shellenv)"
+fi
 
 # Shell name
 SHELL=$(cat /proc/$$/comm)
