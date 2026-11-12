@@ -34,9 +34,9 @@ background = "#24283bFF"
 background_unfocused = "#16161eFF"
 text = "#c0caf5FF"
 text_unfocused = "#565f89FF"
-close = "#f7768eFF"
-maximize = "#7aa2f7FF"
-minimize = "#e0af68FF"
+close = "#565f89FF"
+maximize = "#565f89FF"
+minimize = "#565f89FF"
 
 [[window_rule]]
 match.is_scratchpad = true

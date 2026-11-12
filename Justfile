@@ -384,6 +384,12 @@ build-iso $target_image=("localhost/" + image_name) $tag=default_tag:
 [group('Build Virtal Machine Image')]
 rebuild-qcow2 $target_image=("localhost/" + image_name) $tag=default_tag: && (_rebuild-bib target_image tag "qcow2" "disk_config/disk.toml")
 
+# Rebuild a QCOW2 from a fresh (no-cache) rootful image, including LIVE_USER
+[group('Build Virtal Machine Image')]
+rebuild-qcow2-clean $target_image=("localhost/" + image_name) $tag=default_tag:
+    sudo podman build --no-cache --build-arg "LIVE_USER=true" --tag ${target_image}:${tag} --file Containerfile .
+    sudo env LIVE_USER=true just build-qcow2 ${target_image} ${tag}
+
 # Rebuild a RAW virtual machine image
 [group('Build Virtal Machine Image')]
 rebuild-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_rebuild-bib target_image tag "raw" "disk_config/disk.toml")
@@ -410,7 +416,7 @@ _run-vm $target_image $tag $type $config:
     fi
 
     # Determine an available port to use
-    port=8006
+    port=9000
     while grep -q :${port} <<< $(ss -tunalp); do
         port=$(( port + 1 ))
     done

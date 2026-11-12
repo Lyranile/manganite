@@ -12,9 +12,9 @@ height = 48
 font = "sans 12"
 button_position = "right"  # or "left"
 buttons = ["minimize", "maximize", "close"]  # From the title outward; omit to hide.
-button_size = 24
-button_gap = 10
-button_padding = 12
+button_size = 16
+button_gap = 6
+button_padding = 8
 
 # Choose the background color shown if the lock screen takes too long to appear.
 # [colors]
