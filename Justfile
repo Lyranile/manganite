@@ -394,10 +394,23 @@ rebuild-qcow2-clean $target_image=("localhost/" + image_name) $tag=default_tag:
 [group('Build Virtal Machine Image')]
 rebuild-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_rebuild-bib target_image tag "raw" "disk_config/disk.toml")
 
+# Rebuild a RAW image from a fresh (no-cache) rootful image
+[group('Build Virtal Machine Image')]
+rebuild-raw-clean $target_image=("localhost/" + image_name) $tag=default_tag:
+    sudo podman build --no-cache --build-arg "LIVE_USER=true" --tag ${target_image}:${tag} --file Containerfile .
+    sudo env LIVE_USER=true just build-raw ${target_image} ${tag}
+
 # Rebuild an ISO virtual machine image
 [group('Build Virtal Machine Image')]
 rebuild-iso $target_image=("localhost/" + image_name) $tag=default_tag: (build target_image tag)
     just build-iso ${target_image} ${tag}
+
+# Rebuild a live ISO from a fresh (no-cache) rootful image, including LIVE_USER
+[group('Build Virtal Machine Image')]
+rebuild-iso-clean $target_image=("localhost/" + image_name) $tag=default_tag:
+    sudo podman build --no-cache --build-arg "LIVE_USER=true" --tag ${target_image}:${tag} --file Containerfile .
+    sudo podman build --cap-add sys_admin --security-opt label=disable --build-context containers-storage=/var/lib/containers/storage -f iso/Containerfile --build-arg BASE_IMAGE=${target_image}:${tag} -t ${target_image}-installer:${tag} .
+    sudo env TITANOBOA_CTR_IMAGE=${target_image}-installer:${tag} TITANOBOA_OUTPUT_DIR=./output ./iso/titanoboa/main.sh
 
 # Run a virtual machine with the specified image type and configuration
 _run-vm $target_image $tag $type $config:
