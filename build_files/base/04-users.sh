@@ -12,4 +12,12 @@ if [ -f /etc/default/useradd ]; then
 	grep -q '^SHELL=' /etc/default/useradd || echo 'SHELL=/usr/bin/zsh' >>/etc/default/useradd
 fi
 
+# Optional test user for local VM testing (disabled in production)
+if [[ "${TEST_USER:-false}" == "true" ]]; then
+	if ! id manganite >/dev/null 2>&1; then
+		useradd -m -s /usr/bin/zsh manganite
+	fi
+	echo 'manganite:manganite' | chpasswd
+fi
+
 echo "::endgroup::"
