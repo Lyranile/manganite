@@ -20,7 +20,7 @@ echo 'liveuser:live' | chpasswd
 chown -R liveuser:liveuser /home/liveuser
 
 # Use the dedicated live greeter config (with autologin)
-install -Dm644 /src/build_files/iso/greetd-live.toml /etc/greetd/config.toml
+install -Dm644 /src/build_files/shared/greetd.toml /etc/greetd/config.toml
 
 # Live ISO must boot into the graphical session, not the anaconda installer target.
 ln -sf /usr/lib/systemd/system/graphical.target /etc/systemd/system/default.target
